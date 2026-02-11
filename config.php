@@ -1,8 +1,5 @@
 <?php
 // Configuración de la base de datos
-// Soporte para Railway, Heroku y desarrollo local
-<?php
-// Configuración de la base de datos
 // Soporte para Railway, Heroku (ClearDB) y desarrollo local
 
 $is_remote_db = false;
@@ -33,17 +30,6 @@ if (getenv('DATABASE_URL') || getenv('MYSQL_URL')) {
     define('DB_PASS', '');
     define('DB_NAME', 'fetteria_inventario');
     define('DB_PORT', 3306);
-}
-    define('DB_USER', $url['user']);
-    define('DB_PASS', $url['pass']);
-    define('DB_NAME', substr($url['path'], 1));
-}
-// Configuración local (XAMPP)
-else {
-    define('DB_HOST', 'localhost');
-    define('DB_USER', 'root');
-    define('DB_PASS', '');
-    define('DB_NAME', 'fetteria_inventario');
 }
 
 // Crear archivo de log si no existe
