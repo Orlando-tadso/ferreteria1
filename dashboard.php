@@ -26,7 +26,7 @@ foreach ($todos_productos as $prod) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Inventario - Ferretería</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -200,61 +200,75 @@ foreach ($todos_productos as $prod) {
 
     <?php if (!empty($categorias_inventario)): ?>
     <script>
-        // Datos del gráfico de categorías
-        const categoriasLabels = <?php echo json_encode(array_keys($categorias_inventario)); ?>;
-        const categoriasValues = <?php echo json_encode(array_values($categorias_inventario)); ?>;
+        // Esperar a que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Datos del gráfico de categorías
+            const categoriasLabels = <?php echo json_encode(array_keys($categorias_inventario)); ?>;
+            const categoriasValues = <?php echo json_encode(array_values($categorias_inventario)); ?>;
 
-        const ctx = document.getElementById('categoriasChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: categoriasLabels,
-                    datasets: [{
-                        data: categoriasValues,
-                        backgroundColor: [
-                            '#FF6B6B',
-                            '#4ECDC4',
-                            '#45B7D1',
-                            '#FFA07A',
-                            '#98D8C8',
-                            '#F7DC6F',
-                            '#BB8FCE',
-                            '#85C1E2'
-                        ],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: {
-                                    size: 14
-                                },
-                                padding: 15
-                            }
+            console.log('Categorías:', categoriasLabels);
+            console.log('Valores:', categoriasValues);
+
+            const ctx = document.getElementById('categoriasChart');
+            
+            if (ctx) {
+                try {
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: categoriasLabels,
+                            datasets: [{
+                                data: categoriasValues,
+                                backgroundColor: [
+                                    '#FF6B6B',
+                                    '#4ECDC4',
+                                    '#45B7D1',
+                                    '#FFA07A',
+                                    '#98D8C8',
+                                    '#F7DC6F',
+                                    '#BB8FCE',
+                                    '#85C1E2'
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        font: {
+                                            size: 14
+                                        },
+                                        padding: 15
                                     }
-                                    label += context.parsed + ' unidades';
-                                    return label;
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            label += context.parsed + ' unidades';
+                                            return label;
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
+                    });
+                    console.log('Gráfico creado exitosamente');
+                } catch (error) {
+                    console.error('Error al crear gráfico:', error);
                 }
-            });
-        }
+            } else {
+                console.error('Canvas no encontrado');
+            }
+        });
     </script>
     <?php endif; ?>
 </body>
