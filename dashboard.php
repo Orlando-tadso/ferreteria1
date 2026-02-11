@@ -177,63 +177,85 @@ foreach ($todos_productos as $prod) {
             <!-- Categorías Chart -->
             <section class="card full-width">
                 <h2>📊 Análisis de Inventario por Categoría</h2>
-                <div style="max-width: 500px; margin: 0 auto;">
+                <?php
+                $categorias_inventario = [];
+                foreach ($todos_productos as $prod) {
+                    if (!isset($categorias_inventario[$prod['categoria']])) {
+                        $categorias_inventario[$prod['categoria']] = 0;
+                    }
+                    $categorias_inventario[$prod['categoria']] += $prod['cantidad'];
+                }
+                
+                if (!empty($categorias_inventario)):
+                ?>
+                <div style="max-width: 600px; margin: 20px auto;">
                     <canvas id="categoriasChart"></canvas>
                 </div>
+                <?php else: ?>
+                <p class="no-data">No hay datos para mostrar</p>
+                <?php endif; ?>
             </section>
         </main>
     </div>
 
+    <?php if (!empty($categorias_inventario)): ?>
     <script>
-        // Gráfico de categorías
-        const categoriasData = {
-            <?php
-            $categorias = [];
-            $cantidades = [];
-            foreach ($todos_productos as $prod) {
-                if (!isset($categorias[$prod['categoria']])) {
-                    $categorias[$prod['categoria']] = 0;
-                }
-                $categorias[$prod['categoria']] += $prod['cantidad'];
-            }
-            
-            foreach ($categorias as $cat => $cant) {
-                echo "'" . htmlspecialchars($cat) . "': $cant,\n";
-            }
-            ?>
-        };
+        // Datos del gráfico de categorías
+        const categoriasLabels = <?php echo json_encode(array_keys($categorias_inventario)); ?>;
+        const categoriasValues = <?php echo json_encode(array_values($categorias_inventario)); ?>;
 
-        const ctx = document.getElementById('categoriasChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(categoriasData),
-                datasets: [{
-                    data: Object.values(categoriasData),
-                    backgroundColor: [
-                        '#FF6B6B',
-                        '#4ECDC4',
-                        '#45B7D1',
-                        '#FFA07A',
-                        '#98D8C8',
-                        '#F7DC6F',
-                        '#BB8FCE',
-                        '#85C1E2'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
+        const ctx = document.getElementById('categoriasChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: categoriasLabels,
+                    datasets: [{
+                        data: categoriasValues,
+                        backgroundColor: [
+                            '#FF6B6B',
+                            '#4ECDC4',
+                            '#45B7D1',
+                            '#FFA07A',
+                            '#98D8C8',
+                            '#F7DC6F',
+                            '#BB8FCE',
+                            '#85C1E2'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 14
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed + ' unidades';
+                                    return label;
+                                }
+                            }
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     </script>
+    <?php endif; ?>
 </body>
 </html>
