@@ -2,7 +2,7 @@
   "name": "ferreteria1/inventario",
   "description": "Sistema de inventario y punto de venta para ferretería",
   "require": {
-    "php": "^7.4 || ^8.0"
+    "php": ">=8.0"
   },
   "require-dev": {}
 }
