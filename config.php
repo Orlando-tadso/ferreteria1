@@ -1,15 +1,29 @@
 <?php
 // Configuración de la base de datos
-// Soporte para Heroku (ClearDB) y desarrollo local
-if (getenv('CLEARDB_DATABASE_URL')) {
-    // Parsear URL de ClearDB (formato: mysql://user:pass@host/dbname?reconnect=true)
+// Soporte para Railway, Heroku y desarrollo local
+
+// Railway usa DATABASE_URL o MYSQL_URL
+if (getenv('DATABASE_URL') || getenv('MYSQL_URL')) {
+    $db_url = getenv('DATABASE_URL') ?: getenv('MYSQL_URL');
+    $url = parse_url($db_url);
+    define('DB_HOST', $url['host']);
+    define('DB_USER', $url['user']);
+    define('DB_PASS', $url['pass'] ?? '');
+    define('DB_NAME', substr($url['path'], 1));
+    if (isset($url['port'])) {
+        define('DB_PORT', $url['port']);
+    }
+}
+// Heroku ClearDB
+elseif (getenv('CLEARDB_DATABASE_URL')) {
     $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
     define('DB_HOST', $url['host']);
     define('DB_USER', $url['user']);
     define('DB_PASS', $url['pass']);
-    define('DB_NAME', substr($url['path'], 1)); // Remover el / inicial
-} else {
-    // Configuración local (XAMPP)
+    define('DB_NAME', substr($url['path'], 1));
+}
+// Configuración local (XAMPP)
+else {
     define('DB_HOST', 'localhost');
     define('DB_USER', 'root');
     define('DB_PASS', '');
