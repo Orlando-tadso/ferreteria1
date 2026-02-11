@@ -1,9 +1,20 @@
 <?php
 // Configuración de la base de datos
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'fetteria_inventario');
+// Soporte para Heroku (ClearDB) y desarrollo local
+if (getenv('CLEARDB_DATABASE_URL')) {
+    // Parsear URL de ClearDB (formato: mysql://user:pass@host/dbname?reconnect=true)
+    $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
+    define('DB_HOST', $url['host']);
+    define('DB_USER', $url['user']);
+    define('DB_PASS', $url['pass']);
+    define('DB_NAME', substr($url['path'], 1)); // Remover el / inicial
+} else {
+    // Configuración local (XAMPP)
+    define('DB_HOST', 'localhost');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+    define('DB_NAME', 'fetteria_inventario');
+}
 
 // Crear archivo de log si no existe
 $log_dir = __DIR__ . '/logs';
@@ -52,9 +63,11 @@ if ($conn->connect_error) {
     die("<h1>Error de Sistema</h1><p>No se puede conectar a la base de datos. Por favor, intente más tarde.</p>");
 }
 
-// Crear base de datos si no existe
-$sql = "CREATE DATABASE IF NOT EXISTS " . DB_NAME;
-$conn->query($sql);
+// Crear base de datos si no existe (solo en local, Heroku ya la proporciona)
+if (!getenv('CLEARDB_DATABASE_URL')) {
+    $sql = "CREATE DATABASE IF NOT EXISTS " . DB_NAME;
+    $conn->query($sql);
+}
 
 // Seleccionar la base de datos
 $conn->select_db(DB_NAME);
