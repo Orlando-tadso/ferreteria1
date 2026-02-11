@@ -1,5 +1,9 @@
 <?php
 session_start();
+require_once 'seguridad.php';
+
+// Establecer headers de seguridad
+establecerHeadersSeguridad();
 
 // Si ya está autenticado, redirige al dashboard
 if (isset($_SESSION['usuario_id'])) {
@@ -17,41 +21,54 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($usuario) || empty($contrasena)) {
         $error = 'Por favor completa todos los campos';
     } else {
-        // Buscar usuario
-        $sql = "SELECT id, nombre_usuario, nombre_completo, contrasena, rol FROM usuarios WHERE nombre_usuario = ? AND activo = 1";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $usuario);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            // Verificar contraseña
-            if (password_verify($contrasena, $row['contrasena'])) {
-                // Determinar rol (compatibilidad con filas antiguas)
-                $rol_obtenido = $row['rol'] ?? '';
-                if (empty($rol_obtenido) && isset($row['nombre_usuario']) && $row['nombre_usuario'] === 'admin') {
-                    $rol_obtenido = 'admin';
-                }
+        try {
+            // Verificar límite de intentos (protección contra fuerza bruta)
+            LoginRateLimit::verificarIntentos($usuario);
+            
+            // Buscar usuario
+            $sql = "SELECT id, nombre_usuario, nombre_completo, contrasena, rol FROM usuarios WHERE nombre_usuario = ? AND activo = 1";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $usuario);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                // Verificar contraseña
+                if (password_verify($contrasena, $row['contrasena'])) {
+                    // Determinar rol (compatibilidad con filas antiguas)
+                    $rol_obtenido = $row['rol'] ?? '';
+                    if (empty($rol_obtenido) && isset($row['nombre_usuario']) && $row['nombre_usuario'] === 'admin') {
+                        $rol_obtenido = 'admin';
+                    }
 
-                // Iniciar sesión
-                $_SESSION['usuario_id'] = $row['id'];
-                $_SESSION['usuario_nombre'] = $row['nombre_usuario'];
-                $_SESSION['usuario_completo'] = $row['nombre_completo'];
-                $rol_sesion = $rol_obtenido ?: 'inspector';
-                if ($rol_sesion === 'user') {
-                    $rol_sesion = 'inspector';
+                    // Limpiar intentos fallidos
+                    LoginRateLimit::limpiarIntentos($usuario);
+                    
+                    // Iniciar sesión
+                    $_SESSION['usuario_id'] = $row['id'];
+                    $_SESSION['usuario_nombre'] = $row['nombre_usuario'];
+                    $_SESSION['usuario_completo'] = $row['nombre_completo'];
+                    $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                    $rol_sesion = $rol_obtenido ?: 'inspector';
+                    if ($rol_sesion === 'user') {
+                        $rol_sesion = 'inspector';
+                    }
+                    $_SESSION['usuario_rol'] = $rol_sesion;
+                    header("Location: dashboard.php");
+                    exit;
+                } else {
+                    LoginRateLimit::registrarIntentoFallido($usuario);
+                    $error = 'Usuario o contraseña incorrectos';
                 }
-                $_SESSION['usuario_rol'] = $rol_sesion;
-                header("Location: dashboard.php");
-                exit;
             } else {
+                LoginRateLimit::registrarIntentoFallido($usuario);
                 $error = 'Usuario o contraseña incorrectos';
             }
-        } else {
-            $error = 'Usuario o contraseña incorrectos';
+            $stmt->close();
+        } catch (Exception $e) {
+            $error = $e->getMessage();
         }
-        $stmt->close();
     }
 }
 ?>
