@@ -672,10 +672,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 <div class="factura-container" data-numero-factura="${data.numero_factura}" style="font-family: monospace; width: 80mm; margin: 0; padding: 0; font-size: 12px; line-height: 1.2;">
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 5px;">
-<tr><td style="text-align: center; font-weight: bold; font-size: 14px;">FERRETERIA</td></tr>
-<tr><td style="text-align: center; font-size: 10px;">RIF: J-00000000-0</td></tr>
-<tr><td style="text-align: center; font-size: 10px;">Tel: +58-XXX-XXXXXXX</td></tr>
-<tr><td style="text-align: center; font-size: 10px;">Dir: Tu Dirección Aquí</td></tr>
+<tr><td style="text-align: center; font-weight: bold; font-size: 14px;">FERRETERIA FERROCAMPO PINILLOS</td></tr>
+<tr><td style="text-align: center; font-size: 10px;">NIT: J-00000000-0</td></tr>
+<tr><td style="text-align: center; font-size: 10px;">Tel: 3001232763</td></tr>
+<tr><td style="text-align: center; font-size: 10px;">Dir: Calle 11 A Sector Avenida</td></tr>
 <tr><td style="text-align: center; font-size: 10px; border-bottom: 1px solid #000; padding-bottom: 3px;">&nbsp;</td></tr>
 </table>
 
@@ -723,7 +723,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 <tr><td style="padding: 5px 0;"><strong>GRACIAS POR SU COMPRA</strong></td></tr>
 <tr><td style="font-size: 8px;">Conserve esta factura como comprobante</td></tr>
 <tr><td style="font-size: 8px;">Vuelva pronto, le esperamos!</td></tr>
-<tr><td style="font-size: 8px; color: #666; border-top: 1px dashed #000; padding-top: 3px;">${new Date().getFullYear()} Ferreteria - Todos derechos reservados</td></tr>
+<tr><td style="font-size: 8px; color: #666; border-top: 1px dashed #000; padding-top: 3px;">${new Date().getFullYear()} Ferreteria Ferrocampo Pinillos - Todos derechos reservados</td></tr>
 </table>
 
 </div>
