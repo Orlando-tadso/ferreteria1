@@ -153,8 +153,8 @@ function establecerHeadersSeguridad() {
     // Política de referrer
     header('Referrer-Policy: strict-origin-when-cross-origin');
     
-    // Content Security Policy básico
-    header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;");
+    // Content Security Policy - Permitir Chart.js CDN
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
 }
 
 /**
