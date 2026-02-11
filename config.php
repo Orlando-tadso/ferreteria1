@@ -1,23 +1,39 @@
 <?php
 // Configuración de la base de datos
 // Soporte para Railway, Heroku y desarrollo local
+<?php
+// Configuración de la base de datos
+// Soporte para Railway, Heroku (ClearDB) y desarrollo local
 
-// Railway usa DATABASE_URL o MYSQL_URL
+$is_remote_db = false;
+
 if (getenv('DATABASE_URL') || getenv('MYSQL_URL')) {
+    // Railway: DATABASE_URL o MYSQL_URL
     $db_url = getenv('DATABASE_URL') ?: getenv('MYSQL_URL');
     $url = parse_url($db_url);
     define('DB_HOST', $url['host']);
     define('DB_USER', $url['user']);
     define('DB_PASS', $url['pass'] ?? '');
-    define('DB_NAME', substr($url['path'], 1));
-    if (isset($url['port'])) {
-        define('DB_PORT', $url['port']);
-    }
-}
-// Heroku ClearDB
-elseif (getenv('CLEARDB_DATABASE_URL')) {
+    define('DB_NAME', ltrim($url['path'], '/'));
+    define('DB_PORT', $url['port'] ?? 3306);
+    $is_remote_db = true;
+} elseif (getenv('CLEARDB_DATABASE_URL')) {
+    // Heroku ClearDB (formato: mysql://user:pass@host/dbname?reconnect=true)
     $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
     define('DB_HOST', $url['host']);
+    define('DB_USER', $url['user']);
+    define('DB_PASS', $url['pass']);
+    define('DB_NAME', ltrim($url['path'], '/'));
+    define('DB_PORT', $url['port'] ?? 3306);
+    $is_remote_db = true;
+} else {
+    // Configuración local (XAMPP)
+    define('DB_HOST', 'localhost');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+    define('DB_NAME', 'fetteria_inventario');
+    define('DB_PORT', 3306);
+}
     define('DB_USER', $url['user']);
     define('DB_PASS', $url['pass']);
     define('DB_NAME', substr($url['path'], 1));
@@ -53,7 +69,11 @@ $max_reintentos = 3;
 $retraso = 1; // segundos
 
 for ($intento = 1; $intento <= $max_reintentos; $intento++) {
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS);
+    if ($is_remote_db) {
+        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    } else {
+        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, null, DB_PORT);
+    }
     
     if (!$conn->connect_error) {
         // Configurar charset
@@ -77,8 +97,8 @@ if ($conn->connect_error) {
     die("<h1>Error de Sistema</h1><p>No se puede conectar a la base de datos. Por favor, intente más tarde.</p>");
 }
 
-// Crear base de datos si no existe (solo en local, Heroku ya la proporciona)
-if (!getenv('CLEARDB_DATABASE_URL')) {
+// Crear base de datos si no existe (solo en local)
+if (!$is_remote_db) {
     $sql = "CREATE DATABASE IF NOT EXISTS " . DB_NAME;
     $conn->query($sql);
 }
