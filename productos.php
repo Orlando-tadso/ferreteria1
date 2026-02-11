@@ -135,13 +135,15 @@ $categorias = array_unique(array_column($todos_productos, 'categoria'));
                                     </span>
                                 </td>
                                 <td>
-                                    <?php if (esAdmin()): ?>
-                                        <a href="editar_producto.php?id=<?php echo $prod['id']; ?>" class="btn-small">✏️ Editar</a>
-                                        <a href="ver_historial.php?id=<?php echo $prod['id']; ?>" class="btn-small">📋 Historial</a>
-                                        <a href="productos.php?eliminar=<?php echo $prod['id']; ?>" class="btn-small btn-danger" onclick="return confirm('¿Estás seguro?')">🗑️ Eliminar</a>
-                                    <?php else: ?>
-                                        <a href="ver_historial.php?id=<?php echo $prod['id']; ?>" class="btn-small">📋 Historial</a>
-                                    <?php endif; ?>
+                                    <div class="action-buttons">
+                                        <?php if (esAdmin()): ?>
+                                            <a href="editar_producto.php?id=<?php echo $prod['id']; ?>" class="btn-action btn-edit">✏️ Editar</a>
+                                            <a href="ver_historial.php?id=<?php echo $prod['id']; ?>" class="btn-action btn-info">📋 Historial</a>
+                                            <a href="productos.php?eliminar=<?php echo $prod['id']; ?>" class="btn-action btn-delete" onclick="return confirm('¿Estás seguro?')">🗑️ Eliminar</a>
+                                        <?php else: ?>
+                                            <a href="ver_historial.php?id=<?php echo $prod['id']; ?>" class="btn-action btn-info">📋 Historial</a>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

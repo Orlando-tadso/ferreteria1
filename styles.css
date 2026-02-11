@@ -339,6 +339,51 @@ body {
     background-color: #3db3a8;
 }
 
+/* Botones de acción en tabla */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+}
+
+.btn-action {
+    padding: 6px 10px;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: 500;
+    display: block;
+    width: 100%;
+}
+
+.btn-edit {
+    background-color: #3498db;
+}
+
+.btn-edit:hover {
+    background-color: #2980b9;
+}
+
+.btn-info {
+    background-color: var(--secondary-color);
+}
+
+.btn-info:hover {
+    background-color: #3db3a8;
+}
+
+.btn-delete {
+    background-color: #e74c3c;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
+
 /* Filtros */
 .filter-form {
     display: flex;
