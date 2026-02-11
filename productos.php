@@ -59,6 +59,7 @@ $categorias = array_unique(array_column($todos_productos, 'categoria'));
                 <a href="bajo_stock.php" class="nav-link">⚠️ Bajo Stock</a>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
                 <?php if (esAdmin()): ?>
+                    <a href="backup_database.php" class="nav-link">💾 Backup de Datos</a>
                     <a href="crear_usuario.php" class="nav-link">👤 Crear Usuario</a>
                 <?php endif; ?>
                 <a href="logout.php" class="nav-link" style="color: #e74c3c;">🚪 Cerrar Sesión</a>
