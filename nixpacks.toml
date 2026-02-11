@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ["php82Full"]
+nixPkgs = ["php82", "php82Extensions.mysqli", "php82Extensions.pdo_mysql", "php82Extensions.json"]
 
 [phases.build]
-cmds = ["php -r 'echo \"PHP Version: \" . phpversion();'", "composer install --no-dev --optimize-autoloader || true"]
+cmds = ["php -v", "composer install --no-dev || true"]
 
 [start]
-cmd = "php -S 0.0.0.0:${PORT:-8080} -t ."
+cmd = "php -S 0.0.0.0:8080 -t ."
