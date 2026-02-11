@@ -4,8 +4,17 @@
 
 $is_remote_db = false;
 
-// Railway proporciona variables individuales
-if (getenv('MYSQLHOST') && getenv('MYSQLUSER')) {
+// Railway proporciona variables individuales (con prefijo del servicio MySQL)
+if (getenv('MYSQL_MYSQLHOST') && getenv('MYSQL_MYSQLUSER')) {
+    define('DB_HOST', getenv('MYSQL_MYSQLHOST'));
+    define('DB_USER', getenv('MYSQL_MYSQLUSER'));
+    define('DB_PASS', getenv('MYSQL_MYSQLPASSWORD') ?: '');
+    define('DB_NAME', getenv('MYSQL_MYSQLDATABASE') ?: 'railway');
+    define('DB_PORT', getenv('MYSQL_MYSQLPORT') ?: 3306);
+    $is_remote_db = true;
+}
+// Railway también puede usar variables sin prefijo
+elseif (getenv('MYSQLHOST') && getenv('MYSQLUSER')) {
     define('DB_HOST', getenv('MYSQLHOST'));
     define('DB_USER', getenv('MYSQLUSER'));
     define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
