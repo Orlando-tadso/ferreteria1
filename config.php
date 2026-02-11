@@ -4,8 +4,17 @@
 
 $is_remote_db = false;
 
-if (getenv('DATABASE_URL') || getenv('MYSQL_URL')) {
-    // Railway: DATABASE_URL o MYSQL_URL
+// Railway proporciona variables individuales
+if (getenv('MYSQLHOST') && getenv('MYSQLUSER')) {
+    define('DB_HOST', getenv('MYSQLHOST'));
+    define('DB_USER', getenv('MYSQLUSER'));
+    define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
+    define('DB_NAME', getenv('MYSQLDATABASE') ?: 'railway');
+    define('DB_PORT', getenv('MYSQLPORT') ?: 3306);
+    $is_remote_db = true;
+}
+// Railway también puede usar DATABASE_URL
+elseif (getenv('DATABASE_URL') || getenv('MYSQL_URL')) {
     $db_url = getenv('DATABASE_URL') ?: getenv('MYSQL_URL');
     $url = parse_url($db_url);
     define('DB_HOST', $url['host']);
@@ -14,8 +23,9 @@ if (getenv('DATABASE_URL') || getenv('MYSQL_URL')) {
     define('DB_NAME', ltrim($url['path'], '/'));
     define('DB_PORT', $url['port'] ?? 3306);
     $is_remote_db = true;
-} elseif (getenv('CLEARDB_DATABASE_URL')) {
-    // Heroku ClearDB (formato: mysql://user:pass@host/dbname?reconnect=true)
+}
+// Heroku ClearDB
+elseif (getenv('CLEARDB_DATABASE_URL')) {
     $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
     define('DB_HOST', $url['host']);
     define('DB_USER', $url['user']);
@@ -23,8 +33,9 @@ if (getenv('DATABASE_URL') || getenv('MYSQL_URL')) {
     define('DB_NAME', ltrim($url['path'], '/'));
     define('DB_PORT', $url['port'] ?? 3306);
     $is_remote_db = true;
-} else {
-    // Configuración local (XAMPP)
+}
+// Configuración local (XAMPP)
+else {
     define('DB_HOST', 'localhost');
     define('DB_USER', 'root');
     define('DB_PASS', '');
