@@ -1,0 +1,20 @@
+# Environment variables (NEVER commit API keys!)
+.env
+
+# Logs
+logs/
+*.log
+
+# Composer
+/vendor/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
