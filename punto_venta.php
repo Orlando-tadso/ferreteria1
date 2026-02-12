@@ -673,7 +673,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 5px;">
 <tr><td style="text-align: center; font-weight: bold; font-size: 14px;">FERRETERIA FERROCAMPO PINILLOS</td></tr>
-<tr><td style="text-align: center; font-size: 10px;">NIT: J-00000000-0</td></tr>
+<tr><td style="text-align: center; font-size: 10px;">NIT: 9.166.294-4</td></tr>
 <tr><td style="text-align: center; font-size: 10px;">Tel: 3001232763</td></tr>
 <tr><td style="text-align: center; font-size: 10px;">Dir: Calle 11 A Sector Avenida</td></tr>
 <tr><td style="text-align: center; font-size: 10px; border-bottom: 1px solid #000; padding-bottom: 3px;">&nbsp;</td></tr>
