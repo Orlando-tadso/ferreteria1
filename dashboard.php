@@ -271,5 +271,6 @@ foreach ($todos_productos as $prod) {
         });
     </script>
     <?php endif; ?>
+    <script src="check-updates.js"></script>
 </body>
 </html>

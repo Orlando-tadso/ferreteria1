@@ -252,5 +252,6 @@ if (is_dir($backup_dir)) {
             </section>
         </main>
     </div>
+    <script src="check-updates.js"></script>
 </body>
 </html>

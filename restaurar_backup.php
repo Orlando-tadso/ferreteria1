@@ -215,5 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_backup'])) {
             </div>
         </main>
     </div>
+    <script src="check-updates.js"></script>
 </body>
 </html>

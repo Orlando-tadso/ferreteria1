@@ -89,5 +89,6 @@ $bajo_stock = $producto_obj->obtenerBajoStock();
             </section>
         </main>
     </div>
+    <script src="check-updates.js"></script>
 </body>
 </html>

@@ -157,5 +157,6 @@ $categorias = array_unique(array_column($todos_productos, 'categoria'));
             </section>
         </main>
     </div>
+    <script src="check-updates.js"></script>
 </body>
 </html>
