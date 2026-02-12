@@ -1,6 +1,26 @@
 <?php
-// Archivo de versión - devuelve el timestamp actual
-// Se usa para detectar cuando hay nuevos cambios en el servidor
+// Archivo de versión - usa el mtime de archivos clave
+// Solo cambia cuando realmente hay cambios en el código
 header('Content-Type: application/json');
-echo json_encode(['timestamp' => time()]);
+
+// Archivos clave cuyo cambio indica una actualización
+$archivos_clave = [
+    __DIR__ . '/dashboard.php',
+    __DIR__ . '/productos.php',
+    __DIR__ . '/punto_venta.php',
+    __DIR__ . '/styles.css'
+];
+
+// Obtener el timestamp más reciente de los archivos
+$timestamp_maximo = 0;
+foreach ($archivos_clave as $archivo) {
+    if (file_exists($archivo)) {
+        $mtime = filemtime($archivo);
+        if ($mtime > $timestamp_maximo) {
+            $timestamp_maximo = $mtime;
+        }
+    }
+}
+
+echo json_encode(['timestamp' => $timestamp_maximo]);
 ?>

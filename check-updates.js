@@ -3,18 +3,24 @@
 
 (function() {
     let versionActual = null;
+    let esPrimeraVerificacion = true;
     
     // Obtener versión inicial
     function obtenerVersion() {
-        fetch('/version.php')
+        fetch('/version.php?_=' + Math.random()) // Evitar cache
             .then(response => response.json())
             .then(data => {
-                if (versionActual === null) {
-                    // Primera vez - guardar versión
-                    versionActual = data.timestamp;
+                const versionServidor = data.timestamp;
+                
+                if (esPrimeraVerificacion) {
+                    // Primera vez - guardar versión sin mostrar banner
+                    versionActual = versionServidor;
                     localStorage.setItem('systemVersion', versionActual);
-                } else if (data.timestamp !== versionActual) {
-                    // Hay una nueva versión disponible
+                    esPrimeraVerificacion = false;
+                } else if (versionServidor && versionServidor != versionActual && versionServidor > versionActual) {
+                    // Hay una versión más reciente disponible
+                    versionActual = versionServidor;
+                    localStorage.setItem('systemVersion', versionActual);
                     mostrarBannerActualizacion();
                 }
             })
@@ -62,7 +68,14 @@
         document.body.insertBefore(banner, document.body.firstChild);
     }
     
-    // Verificar versión cada 5 segundos
-    obtenerVersion();
-    setInterval(obtenerVersion, 5000);
+    // Esperar a que el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            obtenerVersion();
+            setInterval(obtenerVersion, 5000);
+        });
+    } else {
+        obtenerVersion();
+        setInterval(obtenerVersion, 5000);
+    }
 })();
