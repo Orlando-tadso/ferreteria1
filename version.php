@@ -12,6 +12,8 @@ $archivos_clave = [
     __DIR__ . '/historial_ventas.php',
     __DIR__ . '/agregar_producto.php',
     __DIR__ . '/editar_producto.php',
+    __DIR__ . '/login.php',
+    __DIR__ . '/setup_admin.php',
     __DIR__ . '/styles.css'
 ];
 

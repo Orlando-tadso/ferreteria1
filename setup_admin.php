@@ -6,10 +6,10 @@ $sql = "DELETE FROM usuarios WHERE nombre_usuario = 'admin'";
 $conn->query($sql);
 
 // Crear usuario admin nuevo
-$nombre_usuario = "admin";
-$nombre_completo = "Administrador";
+$nombre_usuario = "DAVID SANTANA";
+$nombre_completo = "DAVID SANTANA B";
 $email = "admin@ferreteria.com";
-$contrasena = "admin123";
+$contrasena = "DAVID2026";
 $contrasena_hash = password_hash($contrasena, PASSWORD_DEFAULT);
 
 // Insertar usuario admin con rol 'admin'
