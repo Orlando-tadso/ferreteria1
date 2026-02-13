@@ -16,9 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar'])) {
         $conn->begin_transaction();
         
         // Limpiar todas las tablas de historial
-        $conn->query("DELETE FROM detalle_ventas");
+        $conn->query("DELETE FROM detalles_venta");
         $conn->query("DELETE FROM ventas");
-        $conn->query("DELETE FROM historial_productos");
+        $conn->query("DELETE FROM movimientos");
         
         // Commit de la transacción
         $conn->commit();
@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar'])) {
 
 // Obtener conteo de registros
 $count_ventas = $conn->query("SELECT COUNT(*) as total FROM ventas")->fetch_assoc()['total'];
-$count_detalles = $conn->query("SELECT COUNT(*) as total FROM detalle_ventas")->fetch_assoc()['total'];
-$count_movimientos = $conn->query("SELECT COUNT(*) as total FROM historial_productos")->fetch_assoc()['total'];
+$count_detalles = $conn->query("SELECT COUNT(*) as total FROM detalles_venta")->fetch_assoc()['total'];
+$count_movimientos = $conn->query("SELECT COUNT(*) as total FROM movimientos")->fetch_assoc()['total'];
 
 ?>
 <!DOCTYPE html>
