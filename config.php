@@ -1,4 +1,7 @@
 <?php
+// Configuración de zona horaria para Colombia
+date_default_timezone_set('America/Bogota');
+
 // Configuración de la base de datos
 // Soporte para Railway, Heroku (ClearDB) y desarrollo local
 
@@ -84,6 +87,8 @@ for ($intento = 1; $intento <= $max_reintentos; $intento++) {
     if (!$conn->connect_error) {
         // Configurar charset
         $conn->set_charset("utf8mb4");
+        // Configurar zona horaria para Colombia
+        $conn->query("SET time_zone = '-05:00'");
         break;
     }
     

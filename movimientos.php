@@ -8,27 +8,14 @@ $producto_obj = new Producto($conn);
 $venta_obj = new Venta($conn);
 
 if (isset($_GET['id'])) {
-    $historial = $producto_obj->obtenerHistorial($_GET['id']);
     $producto = $producto_obj->obtenerPorId($_GET['id']);
 } else {
-    $historial = $producto_obj->obtenerHistorial();
     $producto = null;
 }
 
-// Filtrar el historial para excluir movimientos de ventas individuales
-// (las ventas se mostrarán agrupadas más adelante)
-$historial = array_filter($historial, function($mov) {
-    // Mantener solo movimientos que NO sean ventas (tipo salida por venta)
-    // Las ventas se identifican porque tienen motivo vacío o contienen "Venta"
-    if ($mov['tipo_movimiento'] == 'salida' && (empty($mov['motivo']) || stripos($mov['motivo'], 'venta') !== false)) {
-        return false; // Excluir este movimiento (es una venta individual)
-    }
-    return true; // Mantener entradas y salidas manuales
-});
-
-// Obtener historial de ventas y convertirlo en movimientos
+// Obtener SOLO las ventas agrupadas (sin duplicados de movimientos individuales)
 $ventas = $venta_obj->obtenerHistorialVentas(100);
-$movimientos_ventas = [];
+$historial_combinado = [];
 
 foreach ($ventas as $v) {
     // Filtrar solo ventas del sistema de ferretería (con total > 0)
@@ -47,7 +34,7 @@ foreach ($ventas as $v) {
         $cantidad_total += $detalle['cantidad'];
     }
     
-    $movimientos_ventas[] = [
+    $historial_combinado[] = [
         'nombre' => implode(', ', $productos_nombres),
         'tipo_movimiento' => 'venta',
         'cantidad' => $cantidad_total,
@@ -56,8 +43,7 @@ foreach ($ventas as $v) {
     ];
 }
 
-// Combinar ambos historiales y ordenar por fecha descendente
-$historial_combinado = array_merge($historial, $movimientos_ventas);
+// Ordenar por fecha descendente
 usort($historial_combinado, function($a, $b) {
     return strtotime($b['fecha_movimiento']) - strtotime($a['fecha_movimiento']);
 });
