@@ -9,7 +9,7 @@ $todos_productos = $producto_obj->obtenerTodos();
 // Funcionalidad de eliminar
 if (isset($_GET['eliminar'])) {
     if (!esAdmin()) {
-        header('Location: productos.php?error=No tienes permisos para eliminar artículos');
+        header('Location: productos.php?error=No tienes permisos para eliminar productos');
         exit;
     }
     $id = $_GET['eliminar'];
@@ -49,9 +49,9 @@ $categorias = array_unique(array_column($todos_productos, 'categoria'));
             </div>
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link active">📦 Artículos</a>
+                <a href="productos.php" class="nav-link active">📦 Productos</a>
                 <?php if (esAdmin()): ?>
-                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Artículo</a>
+                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                     <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
                 <?php endif; ?>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
@@ -69,8 +69,8 @@ $categorias = array_unique(array_column($todos_productos, 'categoria'));
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <h1>📦 Gestión de Artículos</h1>
-                <p>Total de artículos: <?php echo count($todos_productos); ?></p>
+                <h1>📦 Gestión de Productos</h1>
+                <p>Total de productos: <?php echo count($todos_productos); ?></p>
             </header>
 
             <?php if (isset($_GET['mensaje'])): ?>

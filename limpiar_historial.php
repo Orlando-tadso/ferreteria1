@@ -132,8 +132,8 @@ $count_movimientos = $conn->query("SELECT COUNT(*) as total FROM movimientos")->
             </div>
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link">📦 Artículos</a>
-                <a href="agregar_producto.php" class="nav-link">➕ Agregar Artículo</a>
+                <a href="productos.php" class="nav-link">📦 Productos</a>
+                <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                 <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
                 <a href="historial_ventas.php" class="nav-link">📊 Historial Ventas</a>

@@ -37,9 +37,9 @@ foreach ($todos_productos as $prod) {
             </div>
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link active">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link">📦 Artículos</a>
+                <a href="productos.php" class="nav-link">📦 Productos</a>
                 <?php if (esAdmin()): ?>
-                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Artículo</a>
+                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                     <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
                 <?php endif; ?>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
@@ -73,7 +73,7 @@ foreach ($todos_productos as $prod) {
                 <div class="stat-card">
                     <div class="stat-icon">📦</div>
                     <div class="stat-info">
-                        <p class="stat-label">Total de Artículos</p>
+                        <p class="stat-label">Total de Productos</p>
                         <p class="stat-value"><?php echo $total_productos; ?></p>
                     </div>
                 </div>
@@ -97,7 +97,7 @@ foreach ($todos_productos as $prod) {
                 <div class="stat-card">
                     <div class="stat-icon">⚠️</div>
                     <div class="stat-info">
-                        <p class="stat-label">Artículos Bajo Stock</p>
+                        <p class="stat-label">Productos Bajo Stock</p>
                         <p class="stat-value"><?php echo count($bajo_stock); ?></p>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ foreach ($todos_productos as $prod) {
             <div class="content-grid">
                 <!-- Productos Bajo Stock -->
                 <section class="card">
-                    <h2>⚠️ Artículos en Bajo Stock</h2>
+                    <h2>⚠️ Productos en Bajo Stock</h2>
                     <?php if (count($bajo_stock) > 0): ?>
                         <table class="table">
                             <thead>
@@ -136,7 +136,7 @@ foreach ($todos_productos as $prod) {
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="no-data">✓ Todos los artículos tienen stock suficiente</p>
+                        <p class="no-data">✓ Todos los productos tienen stock suficiente</p>
                     <?php endif; ?>
                 </section>
 

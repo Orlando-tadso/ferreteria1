@@ -371,7 +371,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
                 <a href="productos.php" class="nav-link">📦 Artículos</a>
                 <?php if (esAdmin()): ?>
-                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Artículo</a>
+                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                 <?php endif; ?>
                 <a href="punto_venta.php" class="nav-link active">🛒 Punto de Venta</a>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>

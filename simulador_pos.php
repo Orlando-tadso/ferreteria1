@@ -151,7 +151,7 @@ if ($result) {
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
                 <a href="productos.php" class="nav-link">📦 Artículos</a>
-                <a href="agregar_producto.php" class="nav-link">➕ Agregar Artículo</a>
+                <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                 <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
                 <a href="simulador_pos.php" class="nav-link active">🎮 Simulador POS</a>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
@@ -204,7 +204,7 @@ if ($result) {
                         <h3>❌ No hay productos con código de barras</h3>
                         <p>Primero debes:</p>
                         <ol>
-                            <li>Ir a "Agregar Artículo" o editar un producto existente</li>
+                            <li>Ir a "Agregar Producto" o editar un producto existente</li>
                             <li>Agregar un "Código de Barras" a cada producto</li>
                             <li>O usa la opción "Agregar Productos de Ejemplo"</li>
                         </ol>

@@ -59,9 +59,9 @@ if (isset($_GET['id'])) {
             </div>
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link active">📦 Artículos</a>
+                <a href="productos.php" class="nav-link active">📦 Productos</a>
                 <?php if (esAdmin()): ?>
-                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Artículo</a>
+                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                     <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
                 <?php endif; ?>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>

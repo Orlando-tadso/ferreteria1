@@ -12,7 +12,7 @@ $bajo_stock = $producto_obj->obtenerBajoStock();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artículos Bajo Stock - Ferretería</title>
+    <title>Productos Bajo Stock - Ferretería</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -24,9 +24,9 @@ $bajo_stock = $producto_obj->obtenerBajoStock();
             </div>
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link">📦 Artículos</a>
+                <a href="productos.php" class="nav-link">📦 Productos</a>
                 <?php if (esAdmin()): ?>
-                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Artículo</a>
+                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                     <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
                 <?php endif; ?>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
@@ -43,8 +43,8 @@ $bajo_stock = $producto_obj->obtenerBajoStock();
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <h1>⚠️ Artículos en Bajo Stock</h1>
-                <p>Artículos que necesitan restock: <?php echo count($bajo_stock); ?></p>
+                <h1>⚠️ Productos en Bajo Stock</h1>
+                <p>Productos que necesitan restock: <?php echo count($bajo_stock); ?></p>
             </header>
 
             <section class="card">
@@ -83,7 +83,7 @@ $bajo_stock = $producto_obj->obtenerBajoStock();
                     </table>
                 <?php else: ?>
                     <div class="alert alert-success">
-                        ✓ Todos los artículos tienen suficiente stock
+                        ✓ Todos los productos tienen suficiente stock
                     </div>
                 <?php endif; ?>
             </section>
