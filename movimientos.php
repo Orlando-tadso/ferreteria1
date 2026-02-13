@@ -13,8 +13,14 @@ if (isset($_GET['id'])) {
     $producto = null;
 }
 
-// Obtener movimientos manuales (entradas y salidas de ajrastes de stock)
-$historial = $producto_obj->obtenerHistorial();
+// Obtener movimientos MANUALES (solo entradas y salidas, NO ventas)
+$todos_movimientos = $producto_obj->obtenerHistorial();
+
+// Filtrar solo entrada y salida manual (excluir ventas que se registraron en movimientos)
+$historial = array_filter($todos_movimientos, function($mov) {
+    // Mantener solo entrada y salida manual (no venta)
+    return $mov['tipo_movimiento'] == 'entrada' || $mov['tipo_movimiento'] == 'salida';
+});
 
 // Obtener ventas agrupadas
 $ventas = $venta_obj->obtenerHistorialVentas(100);
