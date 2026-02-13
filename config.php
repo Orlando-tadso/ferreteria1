@@ -2,23 +2,32 @@
 // Configuración de zona horaria para Colombia
 date_default_timezone_set('America/Bogota');
 
-// Configuración de sesiones - Tiempo de vida prolongado (8 horas)
-if (session_status() == PHP_SESSION_NONE) {
-    // Configurar cookie de sesión para 8 horas
-    ini_set('session.gc_maxlifetime', 28800); // 8 horas en segundos
+// Configuración de sesiones ANTES de cualquier session_start()
+if (session_status() === PHP_SESSION_NONE) {
+    // Configurar cookies de sesión ANTES de iniciar
+    ini_set('session.gc_maxlifetime', 28800); // 8 horas
     ini_set('session.gc_probability', 1);
     ini_set('session.gc_divisor', 100);
-    // Hacer que la cookie sea HTTPOnly para mayor seguridad
     ini_set('session.cookie_httponly', 1);
-    // Configurar duración de la cookie
+    ini_set('session.use_strict_mode', 1); // Rechazar IDs inválidos
+    ini_set('session.use_only_cookies', 1); // Solo usar cookies
+    
+    // Configurar parámetros de la cookie
     session_set_cookie_params([
         'lifetime' => 28800, // 8 horas
         'path' => '/',
-        'secure' => false, // Cambiar a true en producción con HTTPS
+        'secure' => false, // Cambiar a true en HTTPS
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
+    
     session_start();
+    
+    // Regenerar ID de sesión solo la primera vez
+    if (!isset($_SESSION['_session_regenerated'])) {
+        session_regenerate_id(true);
+        $_SESSION['_session_regenerated'] = true;
+    }
 }
 
 // Configuración de la base de datos
