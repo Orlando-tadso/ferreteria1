@@ -13,9 +13,12 @@ if (isset($_GET['id'])) {
     $producto = null;
 }
 
-// Obtener SOLO las ventas agrupadas (sin duplicados de movimientos individuales)
+// Obtener movimientos manuales (entradas y salidas de ajrastes de stock)
+$historial = $producto_obj->obtenerHistorial();
+
+// Obtener ventas agrupadas
 $ventas = $venta_obj->obtenerHistorialVentas(100);
-$historial_combinado = [];
+$movimientos_ventas = [];
 
 foreach ($ventas as $v) {
     // Filtrar solo ventas del sistema de ferretería (con total > 0)
@@ -34,7 +37,7 @@ foreach ($ventas as $v) {
         $cantidad_total += $detalle['cantidad'];
     }
     
-    $historial_combinado[] = [
+    $movimientos_ventas[] = [
         'nombre' => implode(', ', $productos_nombres),
         'tipo_movimiento' => 'venta',
         'cantidad' => $cantidad_total,
@@ -43,7 +46,8 @@ foreach ($ventas as $v) {
     ];
 }
 
-// Ordenar por fecha descendente
+// Combinar movimientos manuales y ventas agrupadas, ordenar por fecha descendente
+$historial_combinado = array_merge($historial, $movimientos_ventas);
 usort($historial_combinado, function($a, $b) {
     return strtotime($b['fecha_movimiento']) - strtotime($a['fecha_movimiento']);
 });
