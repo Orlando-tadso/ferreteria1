@@ -8,6 +8,8 @@ $archivos_clave = [
     __DIR__ . '/dashboard.php',
     __DIR__ . '/productos.php',
     __DIR__ . '/punto_venta.php',
+    __DIR__ . '/movimientos.php',
+    __DIR__ . '/historial_ventas.php',
     __DIR__ . '/styles.css'
 ];
 
