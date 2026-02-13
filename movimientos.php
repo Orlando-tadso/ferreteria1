@@ -15,6 +15,17 @@ if (isset($_GET['id'])) {
     $producto = null;
 }
 
+// Filtrar el historial para excluir movimientos de ventas individuales
+// (las ventas se mostrarán agrupadas más adelante)
+$historial = array_filter($historial, function($mov) {
+    // Mantener solo movimientos que NO sean ventas (tipo salida por venta)
+    // Las ventas se identifican porque tienen motivo vacío o contienen "Venta"
+    if ($mov['tipo_movimiento'] == 'salida' && (empty($mov['motivo']) || stripos($mov['motivo'], 'venta') !== false)) {
+        return false; // Excluir este movimiento (es una venta individual)
+    }
+    return true; // Mantener entradas y salidas manuales
+});
+
 // Obtener historial de ventas y convertirlo en movimientos
 $ventas = $venta_obj->obtenerHistorialVentas(100);
 $movimientos_ventas = [];
