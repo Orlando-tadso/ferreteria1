@@ -6,21 +6,20 @@ require_once 'Venta.php';
 $venta = new Venta($conn);
 $ventas = $venta->obtenerHistorialVentas(100);
 
-// Obtener todos los detalles de ventas
-$todos_detalles = [];
+// Procesar ventas con sus detalles
+$ventas_procesadas = [];
 foreach ($ventas as $v) {
     $detalles = $venta->obtenerDetallesVenta($v['id']);
+    $v['detalles'] = $detalles;
+    $v['total_venta'] = 0;
     foreach ($detalles as $detalle) {
-        $detalle['numero_factura'] = $v['numero_factura'];
-        $detalle['cliente_nombre'] = $v['cliente_nombre'];
-        $detalle['cliente_cedula'] = $v['cliente_cedula'];
-        $detalle['fecha_venta'] = $v['fecha_venta'];
-        $todos_detalles[] = $detalle;
+        $v['total_venta'] += $detalle['subtotal'];
     }
+    $ventas_procesadas[] = $v;
 }
 
 // Ordenar por fecha descendente
-usort($todos_detalles, function($a, $b) {
+usort($ventas_procesadas, function($a, $b) {
     return strtotime($b['fecha_venta']) - strtotime($a['fecha_venta']);
 });
 
@@ -103,33 +102,68 @@ usort($todos_detalles, function($a, $b) {
             </header>
 
             <section class="card">
-                <h2>Todos los Productos Vendidos</h2>
+                <h2>Historial de Ventas Agrupadas</h2>
                 
-                <?php if (count($todos_detalles) > 0): ?>
+                <?php if (count($ventas_procesadas) > 0): ?>
                     <table class="table table-responsive">
                         <thead>
                             <tr>
                                 <th>Factura</th>
                                 <th>Cliente</th>
                                 <th>Cédula</th>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Precio Unitario</th>
-                                <th>Subtotal</th>
-                                <th>Fecha</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Fecha y Hora</th>
+                                <th>Detalles</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($todos_detalles as $detalle): ?>
+                            <?php foreach ($ventas_procesadas as $idx => $venta): ?>
                                 <tr>
-                                    <td><strong><?php echo htmlspecialchars($detalle['numero_factura']); ?></strong></td>
-                                    <td><?php echo htmlspecialchars($detalle['cliente_nombre']); ?></td>
-                                    <td><?php echo htmlspecialchars($detalle['cliente_cedula']); ?></td>
-                                    <td><?php echo htmlspecialchars($detalle['nombre']); ?></td>
-                                    <td><?php echo $detalle['cantidad']; ?></td>
-                                    <td>$<?php echo number_format($detalle['precio_unitario'], 2); ?></td>
-                                    <td><strong>$<?php echo number_format($detalle['subtotal'], 2); ?></strong></td>
-                                    <td><?php echo date('d/m/Y H:i', strtotime($detalle['fecha_venta'])); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($venta['numero_factura']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($venta['cliente_nombre']); ?></td>
+                                    <td><?php echo htmlspecialchars($venta['cliente_cedula']); ?></td>
+                                    <td>
+                                        <?php 
+                                        $productos_list = [];
+                                        foreach ($venta['detalles'] as $det) {
+                                            $productos_list[] = $det['nombre'] . ' (x' . $det['cantidad'] . ')';
+                                        }
+                                        echo htmlspecialchars(implode(', ', $productos_list));
+                                        ?>
+                                    </td>
+                                    <td><strong>$<?php echo number_format($venta['total_venta'], 2); ?></strong></td>
+                                    <td><?php echo date('d/m/Y H:i:s', strtotime($venta['fecha_venta'])); ?></td>
+                                    <td>
+                                        <button class="btn-detalles" onclick="toggleDetalles(<?php echo $idx; ?>)">Ver Detalles</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7" style="padding: 0;">
+                                        <div id="detalles-<?php echo $idx; ?>" class="detalles-venta">
+                                            <h4>Detalles de la Venta:</h4>
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Producto</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Precio Unitario</th>
+                                                        <th>Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($venta['detalles'] as $detalle): ?>
+                                                        <tr>
+                                                            <td><?php echo htmlspecialchars($detalle['nombre']); ?></td>
+                                                            <td><?php echo $detalle['cantidad']; ?></td>
+                                                            <td>$<?php echo number_format($detalle['precio_unitario'], 2); ?></td>
+                                                            <td>$<?php echo number_format($detalle['subtotal'], 2); ?></td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -142,7 +176,14 @@ usort($todos_detalles, function($a, $b) {
     </div>
 
     <script>
-        // Script simplificado ya que ahora no usamos detalles ocultos
+        function toggleDetalles(idx) {
+            const detallesDiv = document.getElementById('detalles-' + idx);
+            if (detallesDiv.style.display === 'none' || detallesDiv.style.display === '') {
+                detallesDiv.style.display = 'block';
+            } else {
+                detallesDiv.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

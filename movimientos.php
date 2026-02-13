@@ -21,15 +21,23 @@ $movimientos_ventas = [];
 
 foreach ($ventas as $v) {
     $detalles = $venta_obj->obtenerDetallesVenta($v['id']);
+    
+    // Agrupar todos los productos de una venta en una sola línea
+    $productos_nombres = [];
+    $cantidad_total = 0;
+    
     foreach ($detalles as $detalle) {
-        $movimientos_ventas[] = [
-            'nombre' => $detalle['nombre'],
-            'tipo_movimiento' => 'venta',
-            'cantidad' => $detalle['cantidad'],
-            'motivo' => 'Venta factura ' . $v['numero_factura'] . ' - Cliente: ' . $v['cliente_nombre'],
-            'fecha_movimiento' => $v['fecha_venta']
-        ];
+        $productos_nombres[] = $detalle['nombre'] . ' (x' . $detalle['cantidad'] . ')';
+        $cantidad_total += $detalle['cantidad'];
     }
+    
+    $movimientos_ventas[] = [
+        'nombre' => implode(', ', $productos_nombres),
+        'tipo_movimiento' => 'venta',
+        'cantidad' => $cantidad_total,
+        'motivo' => 'Venta factura ' . $v['numero_factura'] . (!empty($v['cliente_nombre']) ? ' - Cliente: ' . $v['cliente_nombre'] : ''),
+        'fecha_movimiento' => $v['fecha_venta']
+    ];
 }
 
 // Combinar ambos historiales y ordenar por fecha descendente
