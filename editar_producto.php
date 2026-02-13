@@ -109,7 +109,7 @@ if (isset($_GET['id'])) {
                                 <option value="Tubería" <?php echo $producto['categoria'] == 'Tubería' ? 'selected' : ''; ?>>🚰 Tubería</option>
                                 <option value="Eléctrica" <?php echo $producto['categoria'] == 'Eléctrica' ? 'selected' : ''; ?>>⚡ Eléctrica</option>
                                 <option value="Venenos" <?php echo $producto['categoria'] == 'Venenos' ? 'selected' : ''; ?>>☠️ Venenos</option>
-                                <option value="Otros" <?php echo $producto['categoria'] == 'Otros' ? 'selected' : ''; ?>>📦 Otros</option>
+                                <option value="Aceites" <?php echo $producto['categoria'] == 'Aceites' ? 'selected' : ''; ?>>🛢️ Aceites</option>
                             </select>
                         </div>
 
