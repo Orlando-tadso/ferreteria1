@@ -10,6 +10,8 @@ $archivos_clave = [
     __DIR__ . '/punto_venta.php',
     __DIR__ . '/movimientos.php',
     __DIR__ . '/historial_ventas.php',
+    __DIR__ . '/agregar_producto.php',
+    __DIR__ . '/editar_producto.php',
     __DIR__ . '/styles.css'
 ];
 
