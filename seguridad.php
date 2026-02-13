@@ -161,22 +161,16 @@ function establecerHeadersSeguridad() {
  * Validar que la sesión no haya sido secuestrada
  */
 function validarSesion() {
-    // Verificar IP del cliente (más confiable que User Agent)
-    if (!isset($_SESSION['ip_address'])) {
-        $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'] ?? '';
-    } else {
-        $ip_actual = $_SERVER['REMOTE_ADDR'] ?? '';
-        if ($_SESSION['ip_address'] !== $ip_actual) {
-            // IP cambió - posible secuestro
-            session_destroy();
-            header('Location: login.php?error=sesion_invalida');
-            exit;
-        }
+    // Verificar que la sesión tenga los datos necesarios
+    if (!isset($_SESSION['usuario_id'])) {
+        session_destroy();
+        header('Location: login.php?error=sesion_invalida');
+        exit;
     }
     
-    // Verificar User Agent (advertencia pero no destruir sesión)
-    if (!isset($_SESSION['user_agent'])) {
-        $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    // Registrar IP para protección contra secuestro
+    if (!isset($_SESSION['ip_address'])) {
+        $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'] ?? '';
     }
-    // Nota: No destructores por User Agent en F5, solo registrar por seguridad
+    // Nota: No destruimos sesión por cambio de IP (puede ocurrir con proxies/balanceadores)
 }

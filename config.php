@@ -2,33 +2,41 @@
 // Configuración de zona horaria para Colombia
 date_default_timezone_set('America/Bogota');
 
-// Configuración de sesiones ANTES de cualquier session_start()
-if (session_status() === PHP_SESSION_NONE) {
-    // Configurar cookies de sesión ANTES de iniciar
-    ini_set('session.gc_maxlifetime', 28800); // 8 horas
-    ini_set('session.gc_probability', 1);
-    ini_set('session.gc_divisor', 100);
-    ini_set('session.cookie_httponly', 1);
-    ini_set('session.use_strict_mode', 1); // Rechazar IDs inválidos
-    ini_set('session.use_only_cookies', 1); // Solo usar cookies
-    
-    // Configurar parámetros de la cookie
-    session_set_cookie_params([
-        'lifetime' => 28800, // 8 horas
-        'path' => '/',
-        'secure' => false, // Cambiar a true en HTTPS
-        'httponly' => true,
-        'samesite' => 'Lax'
-    ]);
-    
-    session_start();
-    
-    // Regenerar ID de sesión solo la primera vez
-    if (!isset($_SESSION['_session_regenerated'])) {
-        session_regenerate_id(true);
-        $_SESSION['_session_regenerated'] = true;
+// Configuración de sesiones - DEBE ser antes de cualquier session_start()
+if (!function_exists('iniciar_sesion')) {
+    function iniciar_sesion() {
+        if (session_status() === PHP_SESSION_NONE) {
+            // Configurar parámetros de sesión
+            ini_set('session.gc_maxlifetime', 28800); // 8 horas
+            ini_set('session.gc_probability', 1);
+            ini_set('session.gc_divisor', 100);
+            ini_set('session.use_strict_mode', 1);
+            ini_set('session.use_only_cookies', 1);
+            ini_set('session.cookie_httponly', 1);
+            
+            // Configurar parámetros de cookies
+            session_set_cookie_params([
+                'lifetime' => 28800,
+                'path' => '/',
+                'secure' => false,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+            
+            // Iniciar sesión
+            session_start();
+            
+            // Regenerar ID solo la primera vez
+            if (!isset($_SESSION['_iniciado'])) {
+                session_regenerate_id(true);
+                $_SESSION['_iniciado'] = true;
+            }
+        }
     }
 }
+
+// Iniciar sesión
+iniciar_sesion();
 
 // Configuración de la base de datos
 // Soporte para Railway, Heroku (ClearDB) y desarrollo local

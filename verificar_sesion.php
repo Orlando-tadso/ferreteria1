@@ -1,19 +1,22 @@
 <?php
-// La sesión se inicia automáticamente en config.php
-// Solo verificamos que exista
+// Incluir config.php que inicia la sesión automáticamente
+if (!isset($conn)) {
+    require_once 'config.php';
+}
 
 require_once 'seguridad.php';
 
 // Establecer headers de seguridad
 establecerHeadersSeguridad();
 
-// Si no hay sesión activa, redirige a login
+// Verificar que haya sesión activa
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    session_destroy();
+    header('Location: login.php');
     exit;
 }
 
-// Validar que la sesión no haya sido secuestrada
+// Validar integridad de la sesión
 validarSesion();
 
 function obtenerRolUsuario() {
