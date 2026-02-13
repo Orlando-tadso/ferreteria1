@@ -1,5 +1,17 @@
 <?php
-session_start();
+// Asegurar que la sesión esté activa (config.php la inicia automáticamente)
+if (session_status() == PHP_SESSION_NONE) {
+    // Configurar tiempo de vida de sesión (8 horas)
+    ini_set('session.gc_maxlifetime', 28800);
+    session_start();
+    
+    // Regenerar ID de sesión la primera vez (por seguridad)
+    if (!isset($_SESSION['inicializado'])) {
+        session_regenerate_id(true);
+        $_SESSION['inicializado'] = true;
+    }
+}
+
 require_once 'seguridad.php';
 
 // Establecer headers de seguridad

@@ -1,5 +1,6 @@
 <?php
-session_start();
+// La sesión se inicia automáticamente en config.php
+require_once 'config.php';
 require_once 'seguridad.php';
 
 // Establecer headers de seguridad

@@ -2,6 +2,25 @@
 // Configuración de zona horaria para Colombia
 date_default_timezone_set('America/Bogota');
 
+// Configuración de sesiones - Tiempo de vida prolongado (8 horas)
+if (session_status() == PHP_SESSION_NONE) {
+    // Configurar cookie de sesión para 8 horas
+    ini_set('session.gc_maxlifetime', 28800); // 8 horas en segundos
+    ini_set('session.gc_probability', 1);
+    ini_set('session.gc_divisor', 100);
+    // Hacer que la cookie sea HTTPOnly para mayor seguridad
+    ini_set('session.cookie_httponly', 1);
+    // Configurar duración de la cookie
+    session_set_cookie_params([
+        'lifetime' => 28800, // 8 horas
+        'path' => '/',
+        'secure' => false, // Cambiar a true en producción con HTTPS
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
+
 // Configuración de la base de datos
 // Soporte para Railway, Heroku (ClearDB) y desarrollo local
 
