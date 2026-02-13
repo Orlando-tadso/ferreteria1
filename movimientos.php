@@ -20,6 +20,11 @@ $ventas = $venta_obj->obtenerHistorialVentas(100);
 $movimientos_ventas = [];
 
 foreach ($ventas as $v) {
+    // Filtrar solo ventas del sistema de ferretería (con total > 0)
+    if ($v['total'] <= 0) {
+        continue;
+    }
+    
     $detalles = $venta_obj->obtenerDetallesVenta($v['id']);
     
     // Agrupar todos los productos de una venta en una sola línea

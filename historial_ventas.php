@@ -9,6 +9,11 @@ $ventas = $venta->obtenerHistorialVentas(100);
 // Procesar ventas con sus detalles
 $ventas_procesadas = [];
 foreach ($ventas as $v) {
+    // Filtrar solo ventas del sistema de ferretería (con total > 0)
+    if ($v['total'] <= 0) {
+        continue;
+    }
+    
     $detalles = $venta->obtenerDetallesVenta($v['id']);
     $v['detalles'] = $detalles;
     $v['total_venta'] = 0;
