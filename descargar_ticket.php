@@ -57,7 +57,7 @@ function generarTicketTexto($numero_factura, $cliente_nombre, $cliente_cedula, $
     $ticket .= "\n" . str_repeat("-", $ancho) . "\n\n";
     
     // Encabezados
-    $ticket .= sprintf("%-32s %8s %10s %10s\n", "ARTICULO", "CANT.", "P.UNIT.", "TOTAL");
+    $ticket .= sprintf("%-32s %8s %10s %10s\n", "PRODUCTO", "CANT.", "P.UNIT.", "TOTAL");
     $ticket .= str_repeat("-", $ancho) . "\n";
     
     // Productos

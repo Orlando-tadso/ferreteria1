@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">💾 Guardar Artículo</button>
+                        <button type="submit" class="btn btn-primary">💾 Guardar Producto</button>
                         <a href="productos.php" class="btn btn-secondary">❌ Cancelar</a>
                     </div>
                 </form>

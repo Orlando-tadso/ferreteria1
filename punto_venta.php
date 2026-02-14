@@ -691,7 +691,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
 <table width="100%" border="0" cellpadding="2" cellspacing="0" style="margin-bottom: 3px; font-size: 9px;">
 <tr style="border-bottom: 1px solid #000;">
-<td style="text-align: left;"><strong>ARTICULO</strong></td>
+<td style="text-align: left;"><strong>PRODUCTO</strong></td>
 <td style="text-align: center; width: 30px;"><strong>CAN</strong></td>
 <td style="text-align: right; width: 50px;"><strong>PRECIO</strong></td>
 <td style="text-align: right; width: 50px;"><strong>TOTAL</strong></td>

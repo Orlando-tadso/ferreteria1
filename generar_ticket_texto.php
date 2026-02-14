@@ -44,7 +44,7 @@ if ($_POST['action'] === 'generar_ticket') {
     $ticket .= str_repeat("-", 80) . "\n\n";
     
     // Encabezados de tabla
-    $ticket .= sprintf("%-40s %6s %10s %10s\n", "ARTICULO", "CANT.", "PRECIO", "TOTAL");
+    $ticket .= sprintf("%-40s %6s %10s %10s\n", "PRODUCTO", "CANT.", "PRECIO", "TOTAL");
     $ticket .= str_repeat("-", 80) . "\n";
     
     // Productos
