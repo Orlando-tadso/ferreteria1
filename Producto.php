@@ -11,7 +11,9 @@ class Producto {
     // Obtener todos los productos
     public function obtenerTodos() {
         try {
-            $stmt = $this->conn->prepare("SELECT * FROM productos ORDER BY nombre ASC");
+            $stmt = $this->conn->prepare('SELECT p.*, c.nombre as categoria FROM productos p 
+                                          LEFT JOIN categorias c ON p.categoria_id = c.id 
+                                          ORDER BY p.nombre ASC');
             
             if (!$stmt) {
                 throw new Exception("Error en prepared statement: " . $this->conn->error);
@@ -38,7 +40,9 @@ class Producto {
     public function obtenerPorId($id) {
         try {
             $id = intval($id);
-            $stmt = $this->conn->prepare("SELECT * FROM productos WHERE id = ?");
+            $stmt = $this->conn->prepare('SELECT p.*, c.nombre as categoria FROM productos p 
+                                         LEFT JOIN categorias c ON p.categoria_id = c.id 
+                                         WHERE p.id = ?');
             
             if (!$stmt) {
                 throw new Exception("Error en prepared statement: " . $this->conn->error);
@@ -62,10 +66,29 @@ class Producto {
         }
     }
     
+    // Obtener ID de categoría por nombre
+    private function obtenerCategoriaId($nombre_categoria) {
+        $stmt = $this->conn->prepare("SELECT id FROM categorias WHERE nombre = ?");
+        if (!$stmt) {
+            throw new Exception("Error en prepared statement: " . $this->conn->error);
+        }
+        $stmt->bind_param("s", $nombre_categoria);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            throw new Exception("Categoría no encontrada: " . $nombre_categoria);
+        }
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        return $row['id'];
+    }
+    
     // Crear nuevo producto
     public function crear($nombre, $descripcion, $categoria, $cantidad, $cantidad_minima, $precio_unitario, $codigo_barras = null) {
         try {
-            $stmt = $this->conn->prepare("INSERT INTO productos (nombre, descripcion, categoria, cantidad, cantidad_minima, precio_unitario, codigo_barras) 
+            $categoria_id = $this->obtenerCategoriaId($categoria);
+            
+            $stmt = $this->conn->prepare("INSERT INTO productos (nombre, descripcion, categoria_id, cantidad, cantidad_minima, precio_unitario, codigo_barras) 
                     VALUES (?, ?, ?, ?, ?, ?, ?)");
             
             if (!$stmt) {
@@ -77,7 +100,7 @@ class Producto {
             $precio_unitario = floatval($precio_unitario);
             $codigo_barras = $codigo_barras ? trim($codigo_barras) : null;
             
-            $stmt->bind_param("sssiiis", $nombre, $descripcion, $categoria, $cantidad, $cantidad_minima, $precio_unitario, $codigo_barras);
+            $stmt->bind_param("ssiiiis", $nombre, $descripcion, $categoria_id, $cantidad, $cantidad_minima, $precio_unitario, $codigo_barras);
             $stmt->execute();
             
             if ($stmt->error) {
@@ -97,10 +120,12 @@ class Producto {
     // Actualizar producto
     public function actualizar($id, $nombre, $descripcion, $categoria, $cantidad_minima, $precio_unitario, $codigo_barras = null) {
         try {
+            $categoria_id = $this->obtenerCategoriaId($categoria);
+            
             $stmt = $this->conn->prepare("UPDATE productos SET 
                     nombre = ?,
                     descripcion = ?,
-                    categoria = ?,
+                    categoria_id = ?,
                     cantidad_minima = ?,
                     precio_unitario = ?,
                     codigo_barras = ?
@@ -115,7 +140,7 @@ class Producto {
             $precio_unitario = floatval($precio_unitario);
             $codigo_barras = $codigo_barras ? trim($codigo_barras) : null;
             
-            $stmt->bind_param("sssiisi", $nombre, $descripcion, $categoria, $cantidad_minima, $precio_unitario, $codigo_barras, $id);
+            $stmt->bind_param("ssiiiisi", $nombre, $descripcion, $categoria_id, $cantidad_minima, $precio_unitario, $codigo_barras, $id);
             $stmt->execute();
             
             if ($stmt->error) {
