@@ -36,7 +36,7 @@ if (isset($_GET['id'])) {
             </div>
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link active">📦 Artículos</a>
+                <a href="productos.php" class="nav-link active">📦 Productos</a>
                 <?php if (esAdmin()): ?>
                     <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                     <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
@@ -62,7 +62,7 @@ if (isset($_GET['id'])) {
 
             <!-- Información del Producto -->
             <section class="card">
-                <h2>Información del Artículo</h2>
+                <h2>Información del Producto</h2>
                 <div class="info-grid">
                     <div>
                         <strong>Nombre:</strong> <?php echo htmlspecialchars($producto['nombre']); ?>

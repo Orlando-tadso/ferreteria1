@@ -27,11 +27,11 @@ if (isset($_GET['id'])) {
         
         if ($nombre && $categoria && $precio_unitario) {
             if ($producto_obj->actualizar($_GET['id'], $nombre, $descripcion, $categoria, $cantidad_minima, $precio_unitario, $codigo_barras)) {
-                $mensaje = '✓ Artículo actualizado exitosamente';
+                $mensaje = '✓ Producto actualizado exitosamente';
                 $tipo_mensaje = 'success';
                 $producto = $producto_obj->obtenerPorId($_GET['id']);
             } else {
-                $mensaje = '✗ Error al actualizar el artículo';
+                $mensaje = '✗ Error al actualizar el producto';
                 $tipo_mensaje = 'error';
             }
         }
@@ -47,7 +47,7 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Artículo - Ferretería</title>
+    <title>Editar Producto - Ferretería</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -78,7 +78,7 @@ if (isset($_GET['id'])) {
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <h1>✏️ Editar Artículo</h1>
+                <h1>✏️ Editar Producto</h1>
             </header>
 
             <?php if ($mensaje): ?>
@@ -90,7 +90,7 @@ if (isset($_GET['id'])) {
             <section class="card">
                 <form method="POST" class="form">
                     <div class="form-group">
-                        <label for="nombre">Nombre del Artículo *</label>
+                        <label for="nombre">Nombre del Producto *</label>
                         <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($producto['nombre']); ?>" required>
                     </div>
 

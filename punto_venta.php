@@ -369,7 +369,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             </div>
             <nav class="nav-menu">
                 <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link">📦 Artículos</a>
+                <a href="productos.php" class="nav-link">📦 Productos</a>
                 <?php if (esAdmin()): ?>
                     <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
                 <?php endif; ?>
@@ -442,8 +442,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             <span id="subtotal">$0.00</span>
                         </div>
                         <div class="resumen-item">
-                            <span>Total Artículos:</span>
-                            <span id="totalArticulos">0</span>
+                            <span>Total Productos:</span>
+                            <span id="totalProductos">0</span>
                         </div>
                         <div class="resumen-total">
                             Total: <span id="totalPrecio">$0.00</span>
@@ -567,7 +567,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             tbody.innerHTML = '';
 
             let total = 0;
-            let totalArticulos = 0;
+            let totalProductos = 0;
 
             productosEnVenta.forEach((producto, indice) => {
                 let fila = `
@@ -594,11 +594,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 tbody.innerHTML += fila;
 
                 total += Number(producto.subtotal) || 0;
-                totalArticulos += Number(producto.cantidad) || 0;
+                totalProductos += Number(producto.cantidad) || 0;
             });
 
             document.getElementById('subtotal').textContent = '$' + formatCurrency(total);
-            document.getElementById('totalArticulos').textContent = totalArticulos;
+            document.getElementById('totalProductos').textContent = totalProductos;
             document.getElementById('totalPrecio').textContent = '$' + formatCurrency(total);
         }
 

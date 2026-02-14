@@ -52,7 +52,7 @@ $bajo_stock = $producto_obj->obtenerBajoStock();
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Artículo</th>
+                                <th>Producto</th>
                                 <th>Categoría</th>
                                 <th>Cantidad Actual</th>
                                 <th>Cantidad Mínima</th>

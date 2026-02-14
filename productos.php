@@ -88,7 +88,7 @@ $categorias = array_unique(array_column($todos_productos, 'categoria'));
             <!-- Filtros y Búsqueda -->
             <section class="card">
                 <form method="GET" class="filter-form">
-                    <input type="text" name="busqueda" placeholder="🔍 Buscar artículo..." value="<?php echo htmlspecialchars($busqueda); ?>">
+                    <input type="text" name="busqueda" placeholder="🔍 Buscar producto..." value="<?php echo htmlspecialchars($busqueda); ?>">
                     
                     <select name="filtro">
                         <option value="">Todas las categorías</option>
@@ -152,7 +152,7 @@ $categorias = array_unique(array_column($todos_productos, 'categoria'));
                 </table>
 
                 <?php if (count($productos_filtrados) == 0): ?>
-                    <p class="no-data">No se encontraron artículos</p>
+                    <p class="no-data">No se encontraron productos</p>
                 <?php endif; ?>
             </section>
         </main>

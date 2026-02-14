@@ -112,7 +112,7 @@ foreach ($todos_productos as $prod) {
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Artículo</th>
+                                    <th>Producto</th>
                                     <th>Cantidad</th>
                                     <th>Mínimo</th>
                                     <th>Acción</th>
@@ -147,7 +147,7 @@ foreach ($todos_productos as $prod) {
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Artículo</th>
+                                    <th>Producto</th>
                                     <th>Tipo</th>
                                     <th>Cantidad</th>
                                     <th>Fecha</th>

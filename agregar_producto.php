@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if ($nombre && $categoria && $precio_unitario) {
         if ($producto->crear($nombre, $descripcion, $categoria, $cantidad, $cantidad_minima, $precio_unitario, $codigo_barras)) {
-            $mensaje = '✓ Artículo agregado exitosamente';
+            $mensaje = '✓ Producto agregado exitosamente';
             $tipo_mensaje = 'success';
         } else {
-            $mensaje = '✗ Error al agregar el artículo';
+            $mensaje = '✗ Error al agregar el producto';
             $tipo_mensaje = 'error';
         }
     } else {
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <h1>➕ Agregar Nuevo Artículo</h1>
+                <h1>➕ Agregar Nuevo Producto</h1>
             </header>
 
             <?php if ($mensaje): ?>
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <section class="card">
                 <form method="POST" class="form">
                     <div class="form-group">
-                        <label for="nombre">Nombre del Artículo *</label>
+                        <label for="nombre">Nombre del Producto *</label>
                         <input type="text" id="nombre" name="nombre" required>
                     </div>
 

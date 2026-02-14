@@ -109,7 +109,7 @@ usort($historial_combinado, function($a, $b) {
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Artículo</th>
+                                <th>Producto</th>
                                 <th>Tipo</th>
                                 <th>Cantidad</th>
                                 <th>Motivo / Detalles</th>
