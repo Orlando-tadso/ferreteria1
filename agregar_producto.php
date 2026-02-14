@@ -103,6 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <option value="Eléctrica">⚡ Eléctrica</option>
                                 <option value="Venenos">☠️ Venenos</option>
                                 <option value="Aceites">🛢️ Aceites</option>
+                                <option value="Medicinas">💊 Medicinas</option>
+                                <option value="Aperos de caballo">🐴 Aperos de caballo</option>
                             </select>
                         </div>
 
