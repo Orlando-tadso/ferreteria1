@@ -4,13 +4,40 @@ require_once 'config.php';
 require_once 'Venta.php';
 
 $venta = new Venta($conn);
-$ventas = $venta->obtenerHistorialVentas(100);
+
+// Determinar semana a mostrar
+$semana_actual = isset($_GET['semana']) ? $_GET['semana'] : date('Y-W');
+
+// Calcular fechas de lunes y sábado de la semana seleccionada
+$year = substr($semana_actual, 0, 4);
+$week = substr($semana_actual, 5, 2);
+
+// Calcular lunes de la semana
+$fecha_lunes = new DateTime();
+$fecha_lunes->setISODate($year, $week, 1); // 1 = lunes
+$lunes_str = $fecha_lunes->format('Y-m-d');
+
+// Calcular sábado de la semana (6 días después del lunes)
+$fecha_sabado = clone $fecha_lunes;
+$fecha_sabado->modify('+5 days'); // +5 días = sábado
+$sabado_str = $fecha_sabado->format('Y-m-d');
+
+// Obtener todas las ventas y filtrar por la semana
+$ventas = $venta->obtenerHistorialVentas(500);
 
 // Procesar ventas con sus detalles
 $ventas_procesadas = [];
+$total_semana = 0;
+
 foreach ($ventas as $v) {
     // Filtrar solo ventas del sistema de ferretería (con total > 0)
     if ($v['total'] <= 0) {
+        continue;
+    }
+    
+    // Filtrar por rango de fechas (lunes a sábado)
+    $fecha_venta = date('Y-m-d', strtotime($v['fecha_venta']));
+    if ($fecha_venta < $lunes_str || $fecha_venta > $sabado_str) {
         continue;
     }
     
@@ -20,6 +47,7 @@ foreach ($ventas as $v) {
     foreach ($detalles as $detalle) {
         $v['total_venta'] += $detalle['subtotal'];
     }
+    $total_semana += $v['total_venta'];
     $ventas_procesadas[] = $v;
 }
 
@@ -27,6 +55,27 @@ foreach ($ventas as $v) {
 usort($ventas_procesadas, function($a, $b) {
     return strtotime($b['fecha_venta']) - strtotime($a['fecha_venta']);
 });
+
+// Generar opciones de semanas (últimas 12 semanas)
+$opciones_semanas = [];
+for ($i = 0; $i < 12; $i++) {
+    $fecha_temp = new DateTime();
+    $fecha_temp->modify("-$i weeks");
+    $semana_key = $fecha_temp->format('Y-W');
+    
+    // Calcular lunes y sábado para el label
+    $temp_year = $fecha_temp->format('Y');
+    $temp_week = $fecha_temp->format('W');
+    $temp_lunes = new DateTime();
+    $temp_lunes->setISODate($temp_year, $temp_week, 1);
+    $temp_sabado = clone $temp_lunes;
+    $temp_sabado->modify('+5 days');
+    
+    $opciones_semanas[] = [
+        'key' => $semana_key,
+        'label' => $temp_lunes->format('d/m/Y') . ' - ' . $temp_sabado->format('d/m/Y')
+    ];
+}
 
 ?>
 <!DOCTYPE html>
@@ -37,6 +86,13 @@ usort($ventas_procesadas, function($a, $b) {
     <title>Historial de Ventas - Ferretería</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        .form-control {
+            padding: 10px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
         .detalles-venta {
             display: none;
             margin-top: 10px;
@@ -99,15 +155,38 @@ usort($ventas_procesadas, function($a, $b) {
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <h1>📊 Historial de Ventas</h1>
-                <p>Registro de todas las transacciones realizadas</p>
-                <div style="margin-top: 10px;">
-                    <button onclick="location.reload()" class="btn btn-primary" style="cursor: pointer;">🔄 Actualizar</button>
-                </div>
+                <h1>📊 Historial de Ventas Semanales</h1>
+                <p>Ventas de Lunes a Sábado para cuentas semanales</p>
             </header>
 
+            <!-- Selector de Semana -->
             <section class="card">
-                <h2>Historial de Ventas Agrupadas</h2>
+                <h2>🗓️ Seleccionar Semana</h2>
+                <form method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <select name="semana" class="form-control" style="width: 300px;" onchange="this.form.submit()">
+                        <?php foreach ($opciones_semanas as $opcion): ?>
+                            <option value="<?php echo $opcion['key']; ?>" <?php echo $opcion['key'] === $semana_actual ? 'selected' : ''; ?>>
+                                <?php echo $opcion['label']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Ver Semana</button>
+                </form>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 5px;">
+                    <h3 style="margin: 0 0 10px 0; color: #2e7d32;">💰 Total de la Semana</h3>
+                    <p style="margin: 0; font-size: 24px; font-weight: bold; color: #1b5e20;">
+                        $<?php echo number_format($total_semana, 2); ?> COP
+                    </p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">
+                        Del <?php echo $fecha_lunes->format('d/m/Y'); ?> al <?php echo $fecha_sabado->format('d/m/Y'); ?>
+                        (<?php echo count($ventas_procesadas); ?> ventas)
+                    </p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Detalle de Ventas</h2>
                 
                 <?php if (count($ventas_procesadas) > 0): ?>
                     <table class="table table-responsive">
@@ -174,7 +253,7 @@ usort($ventas_procesadas, function($a, $b) {
                         </tbody>
                     </table>
                 <?php else: ?>
-                    <p class="no-data">No hay ventas registradas</p>
+                    <p class="no-data">No hay ventas registradas en esta semana (<?php echo $fecha_lunes->format('d/m/Y'); ?> - <?php echo $fecha_sabado->format('d/m/Y'); ?>)</p>
                 <?php endif; ?>
             </section>
         </main>
