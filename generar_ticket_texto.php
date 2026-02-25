@@ -12,6 +12,8 @@ if ($_POST['action'] === 'generar_ticket') {
     $numero_factura = $_POST['numero_factura'] ?? '';
     $cliente_nombre = $_POST['cliente_nombre'] ?? '';
     $cliente_cedula = $_POST['cliente_cedula'] ?? '';
+    $cliente_email = $_POST['cliente_email'] ?? '';
+    $cliente_telefono = $_POST['cliente_telefono'] ?? '';
     $productos_json = $_POST['productos'] ?? '[]';
     
     $productos = json_decode($productos_json, true);
@@ -41,6 +43,12 @@ if ($_POST['action'] === 'generar_ticket') {
     
     $ticket .= "CLIENTE: " . strtoupper($cliente_nombre) . "\n";
     $ticket .= "CEDULA:  " . $cliente_cedula . "\n";
+    if (!empty($cliente_email)) {
+        $ticket .= "EMAIL:   " . $cliente_email . "\n";
+    }
+    if (!empty($cliente_telefono)) {
+        $ticket .= "TELEF:   " . $cliente_telefono . "\n";
+    }
     $ticket .= str_repeat("-", 80) . "\n\n";
     
     // Encabezados de tabla

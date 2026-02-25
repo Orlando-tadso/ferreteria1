@@ -80,7 +80,7 @@ class Venta {
     }
     
     // Registrar una venta con transacción y prepared statements
-    public function registrarVenta($cliente_nombre, $cliente_cedula, $productos, $usuario_id) {
+    public function registrarVenta($cliente_nombre, $cliente_cedula, $productos, $usuario_id, $cliente_email = '', $cliente_telefono = '') {
         try {
             // Iniciar transacción
             $this->conn->begin_transaction();
@@ -96,13 +96,13 @@ class Venta {
             $usuario_id = intval($usuario_id);
             
             // Insertar venta con prepared statement
-            $stmt = $this->conn->prepare("INSERT INTO ventas (numero_factura, cliente_nombre, cliente_cedula, total, usuario_id) VALUES (?, ?, ?, ?, ?)");
+            $stmt = $this->conn->prepare("INSERT INTO ventas (numero_factura, cliente_nombre, cliente_cedula, cliente_email, cliente_telefono, total, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
             
             if (!$stmt) {
                 throw new Exception("Error en prepared statement: " . $this->conn->error);
             }
             
-            $stmt->bind_param("sssdi", $numero_factura, $cliente_nombre, $cliente_cedula, $total, $usuario_id);
+            $stmt->bind_param("sssssdi", $numero_factura, $cliente_nombre, $cliente_cedula, $cliente_email, $cliente_telefono, $total, $usuario_id);
             $stmt->execute();
             
             if ($stmt->error) {

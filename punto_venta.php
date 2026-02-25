@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'procesar_venta') {
         $cliente_nombre = $_POST['cliente_nombre'] ?? '';
         $cliente_cedula = $_POST['cliente_cedula'] ?? '';
+        $cliente_email = $_POST['cliente_email'] ?? '';
+        $cliente_telefono = $_POST['cliente_telefono'] ?? '';
         $productos_json = $_POST['productos'] ?? '[]';
         
         if (empty($cliente_nombre) || empty($cliente_cedula)) {
@@ -64,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
         }
         
-        $resultado = $venta->registrarVenta($cliente_nombre, $cliente_cedula, $productos, $usuario_id);
+        $resultado = $venta->registrarVenta($cliente_nombre, $cliente_cedula, $productos, $usuario_id, $cliente_email, $cliente_telefono);
         echo json_encode($resultado);
         exit;
     }
@@ -426,12 +428,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <input 
                             type="text" 
                             id="clienteNombre" 
-                            placeholder="Nombre del cliente"
+                            placeholder="Nombre del cliente *"
                         >
                         <input 
                             type="text" 
                             id="clienteCedula" 
-                            placeholder="Cédula del cliente"
+                            placeholder="Cédula del cliente *"
+                        >
+                        <input 
+                            type="email" 
+                            id="clienteEmail" 
+                            placeholder="Correo electrónico (opcional)"
+                        >
+                        <input 
+                            type="tel" 
+                            id="clienteTelefono" 
+                            placeholder="Teléfono/Celular (opcional)"
                         >
                     </div>
 
@@ -609,6 +621,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         function procesarVenta() {
             let clienteNombre = document.getElementById('clienteNombre').value.trim();
             let clienteCedula = document.getElementById('clienteCedula').value.trim();
+            let clienteEmail = document.getElementById('clienteEmail').value.trim();
+            let clienteTelefono = document.getElementById('clienteTelefono').value.trim();
 
             if (!clienteNombre) {
                 alert('⚠️ Por favor ingrese el nombre del cliente');
@@ -639,6 +653,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 },
                 body: 'action=procesar_venta&cliente_nombre=' + encodeURIComponent(clienteNombre) + 
                       '&cliente_cedula=' + encodeURIComponent(clienteCedula) +
+                      '&cliente_email=' + encodeURIComponent(clienteEmail) +
+                      '&cliente_telefono=' + encodeURIComponent(clienteTelefono) +
                       '&productos=' + encodeURIComponent(JSON.stringify(productosEnVenta))
             })
             .then(response => response.json())
@@ -659,6 +675,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         function generarFactura(data) {
             let clienteNombre = document.getElementById('clienteNombre').value;
             let clienteCedula = document.getElementById('clienteCedula').value;
+            let clienteEmail = document.getElementById('clienteEmail').value;
+            let clienteTelefono = document.getElementById('clienteTelefono').value;
             let total = calcularTotal();
             let fecha = new Date();
             let fechaFormato = fecha.toLocaleDateString('es-ES') + ' ' + fecha.toLocaleTimeString('es-ES');
@@ -687,6 +705,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 3px; border-bottom: 1px solid #000; padding-bottom: 3px;">
 <tr><td style="font-size: 10px;"><strong>CLIENTE:</strong> ${clienteNombre}</td></tr>
 <tr><td style="font-size: 10px;"><strong>CEDULA:</strong> ${clienteCedula}</td></tr>
+${clienteEmail ? '<tr><td style="font-size: 9px;"><strong>EMAIL:</strong> ' + clienteEmail + '</td></tr>' : ''}
+${clienteTelefono ? '<tr><td style="font-size: 9px;"><strong>TEL:</strong> ' + clienteTelefono + '</td></tr>' : ''}
 </table>
 
 <table width="100%" border="0" cellpadding="2" cellspacing="0" style="margin-bottom: 3px; font-size: 9px;">
@@ -738,6 +758,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             // Generar ticket en texto puro
             let clienteNombre = document.getElementById('clienteNombre').value;
             let clienteCedula = document.getElementById('clienteCedula').value;
+            let clienteEmail = document.getElementById('clienteEmail').value;
+            let clienteTelefono = document.getElementById('clienteTelefono').value;
             let numeroFactura = document.getElementById('factura').getAttribute('data-numero-factura');
             
             // Abrir en una nueva ventana
@@ -751,6 +773,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 body: 'action=generar_ticket&numero_factura=' + encodeURIComponent(numeroFactura) +
                       '&cliente_nombre=' + encodeURIComponent(clienteNombre) +
                       '&cliente_cedula=' + encodeURIComponent(clienteCedula) +
+                      '&cliente_email=' + encodeURIComponent(clienteEmail) +
+                      '&cliente_telefono=' + encodeURIComponent(clienteTelefono) +
                       '&productos=' + encodeURIComponent(JSON.stringify(productosEnVenta))
             })
             .then(response => response.text())
@@ -789,6 +813,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 productosEnVenta = [];
                 document.getElementById('clienteNombre').value = '';
                 document.getElementById('clienteCedula').value = '';
+                document.getElementById('clienteEmail').value = '';
+                document.getElementById('clienteTelefono').value = '';
                 document.getElementById('seccionFactura').style.display = 'none';
                 document.getElementById('inputCodigoBarras').disabled = false;
                 actualizarTabla();

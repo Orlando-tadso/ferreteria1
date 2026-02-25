@@ -226,6 +226,16 @@ for ($i = 0; $i < 12; $i++) {
                                     <td colspan="7" style="padding: 0;">
                                         <div id="detalles-<?php echo $idx; ?>" class="detalles-venta">
                                             <h4>Detalles de la Venta:</h4>
+                                            <div style="margin-bottom: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;">
+                                                <strong>Cliente:</strong> <?php echo htmlspecialchars($venta['cliente_nombre']); ?><br>
+                                                <strong>Cédula:</strong> <?php echo htmlspecialchars($venta['cliente_cedula']); ?><br>
+                                                <?php if (!empty($venta['cliente_email'])): ?>
+                                                    <strong>Email:</strong> <?php echo htmlspecialchars($venta['cliente_email']); ?><br>
+                                                <?php endif; ?>
+                                                <?php if (!empty($venta['cliente_telefono'])): ?>
+                                                    <strong>Teléfono:</strong> <?php echo htmlspecialchars($venta['cliente_telefono']); ?><br>
+                                                <?php endif; ?>
+                                            </div>
                                             <table>
                                                 <thead>
                                                     <tr>
