@@ -100,7 +100,7 @@ class Producto {
             $precio_unitario = floatval($precio_unitario);
             $codigo_barras = $codigo_barras ? trim($codigo_barras) : null;
             
-            $stmt->bind_param("ssiiiis", $nombre, $descripcion, $categoria_id, $cantidad, $cantidad_minima, $precio_unitario, $codigo_barras);
+            $stmt->bind_param("ssiiidis", $nombre, $descripcion, $categoria_id, $cantidad, $cantidad_minima, $precio_unitario, $codigo_barras);
             $stmt->execute();
             
             if ($stmt->error) {
@@ -140,7 +140,7 @@ class Producto {
             $precio_unitario = floatval($precio_unitario);
             $codigo_barras = $codigo_barras ? trim($codigo_barras) : null;
             
-            $stmt->bind_param("ssiiiisi", $nombre, $descripcion, $categoria_id, $cantidad_minima, $precio_unitario, $codigo_barras, $id);
+            $stmt->bind_param("ssiiidsi", $nombre, $descripcion, $categoria_id, $cantidad_minima, $precio_unitario, $codigo_barras, $id);
             $stmt->execute();
             
             if ($stmt->error) {
