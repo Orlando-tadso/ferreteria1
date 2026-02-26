@@ -236,25 +236,52 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
             background: white;
             border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             margin-top: 20px;
+            font-size: 14px;
         }
         
         .table th {
             background-color: #3498db;
             color: white;
-            padding: 15px;
+            padding: 18px 15px;
             text-align: left;
             font-weight: bold;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            white-space: nowrap;
+        }
+        
+        .table th:last-child {
+            border-right: none;
         }
         
         .table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
+            padding: 15px 18px;
+            border-bottom: 1px solid #e8e8e8;
+            border-right: 1px solid #f0f0f0;
+        }
+        
+        .table td:last-child {
+            border-right: none;
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
         }
         
         .table tr:hover {
             background-color: #f8f9fa;
+        }
+        
+        .table strong {
+            display: block;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        
+        .table small {
+            color: #7f8c8d;
+            font-size: 12px;
         }
         
         .checkbox-devolver {
@@ -432,34 +459,34 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
                 </div>
                 
                 <!-- Historial de Devoluciones -->
-                <h3 style="margin-top: 40px; color: #2c3e50;">📋 Historial de Devoluciones</h3>
+                <h3 style="margin-top: 40px; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">📋 Historial de Devoluciones</h3>
             <?php if (empty($historial)): ?>
-                <p style="color: #666;">No hay devoluciones registradas</p>
+                <p style="color: #666; margin-top: 20px;">No hay devoluciones registradas</p>
             <?php else: ?>
-                <table class="productos-tabla">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>Nº Devolución</th>
-                            <th>Fecha</th>
-                            <th>Nº Factura</th>
-                            <th>Cliente</th>
-                            <th>Motivo</th>
-                            <th>Total Devuelto</th>
-                            <th>Usuario</th>
+                            <th style="width: 15%;">Nº Devolución</th>
+                            <th style="width: 12%;">Fecha</th>
+                            <th style="width: 12%;">Nº Factura</th>
+                            <th style="width: 18%;">Cliente</th>
+                            <th style="width: 22%;">Motivo</th>
+                            <th style="width: 12%; text-align: right;">Total Devuelto</th>
+                            <th style="width: 12%;">Usuario</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($historial as $dev): ?>
                             <tr>
                                 <td><strong><?php echo htmlspecialchars($dev['numero_devolucion']); ?></strong></td>
-                                <td><?php echo date('d/m/Y H:i', strtotime($dev['fecha_devolucion'])); ?></td>
-                                <td><?php echo htmlspecialchars($dev['numero_factura']); ?></td>
+                                <td><?php echo date('d/m/Y<br>H:i', strtotime($dev['fecha_devolucion'])); ?></td>
+                                <td><strong><?php echo htmlspecialchars($dev['numero_factura']); ?></strong></td>
                                 <td>
-                                    <?php echo htmlspecialchars($dev['cliente_nombre']); ?><br>
-                                    <small style="color: #666;"><?php echo htmlspecialchars($dev['cliente_cedula']); ?></small>
+                                    <strong><?php echo htmlspecialchars($dev['cliente_nombre']); ?></strong><br>
+                                    <small><?php echo htmlspecialchars($dev['cliente_cedula']); ?></small>
                                 </td>
-                                <td><?php echo htmlspecialchars(substr($dev['motivo'], 0, 50)) . (strlen($dev['motivo']) > 50 ? '...' : ''); ?></td>
-                                <td style="color: #27ae60; font-weight: bold;">$<?php echo number_format($dev['total_devuelto'], 2); ?></td>
+                                <td><?php echo htmlspecialchars(substr($dev['motivo'], 0, 60)) . (strlen($dev['motivo']) > 60 ? '...' : ''); ?></td>
+                                <td style="text-align: right; color: #27ae60; font-weight: bold;">$<?php echo number_format($dev['total_devuelto'], 2); ?></td>
                                 <td><?php echo htmlspecialchars($dev['usuario']); ?></td>
                             </tr>
                         <?php endforeach; ?>
