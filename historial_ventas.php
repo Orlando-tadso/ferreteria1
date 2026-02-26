@@ -47,7 +47,13 @@ foreach ($ventas as $v) {
     foreach ($detalles as $detalle) {
         $v['total_venta'] += $detalle['subtotal'];
     }
-    $total_semana += $v['total_venta'];
+    
+    // Restar devoluciones del total
+    $total_devuelto = $venta->obtenerTotalDevuelto($v['id']);
+    $v['total_devuelto'] = $total_devuelto;
+    $v['total_neto'] = $v['total_venta'] - $total_devuelto;
+    
+    $total_semana += $v['total_neto'];
     $ventas_procesadas[] = $v;
 }
 
@@ -129,28 +135,7 @@ for ($i = 0; $i < 12; $i++) {
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
-                <h2>👨‍🔧 Ferretería</h2>
-            </div>
-            <nav class="nav-menu">
-                <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link">📦 Productos</a>
-                <?php if (esAdmin()): ?>
-                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
-                    <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
-                <?php endif; ?>
-                <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
-                <a href="historial_ventas.php" class="nav-link active">📊 Historial de Ventas</a>
-                <a href="bajo_stock.php" class="nav-link">⚠️ Bajo Stock</a>
-                <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-                <?php if (esAdmin()): ?>
-                    <a href="crear_usuario.php" class="nav-link">👤 Crear Usuario</a>
-                <?php endif; ?>
-                <a href="logout.php" class="nav-link" style="color: #e74c3c;">🚪 Cerrar Sesión</a>
-            </nav>
-        </aside>
+        <?php require_once 'menu.php'; ?>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -196,7 +181,9 @@ for ($i = 0; $i < 12; $i++) {
                                 <th>Cliente</th>
                                 <th>Cédula</th>
                                 <th>Productos</th>
-                                <th>Total</th>
+                                <th>Total Inicial</th>
+                                <th>Devuelto</th>
+                                <th>Total Neto</th>
                                 <th>Fecha y Hora</th>
                                 <th>Detalles</th>
                             </tr>
@@ -217,6 +204,8 @@ for ($i = 0; $i < 12; $i++) {
                                         ?>
                                     </td>
                                     <td><strong>$<?php echo number_format($venta['total_venta'], 2); ?></strong></td>
+                                    <td style="color: #e74c3c;"><strong><?php echo $venta['total_devuelto'] > 0 ? '-$' . number_format($venta['total_devuelto'], 2) : '-'; ?></strong></td>
+                                    <td style="color: #27ae60; font-weight: bold;">$<?php echo number_format($venta['total_neto'], 2); ?></td>
                                     <td><?php echo date('d/m/Y H:i:s', strtotime($venta['fecha_venta'])); ?></td>
                                     <td>
                                         <button class="btn-detalles" onclick="toggleDetalles(<?php echo $idx; ?>)">Ver Detalles</button>

@@ -275,5 +275,31 @@ class Venta {
             return [];
         }
     }
+    
+    // Obtener total devuelto de una venta
+    public function obtenerTotalDevuelto($venta_id) {
+        try {
+            $venta_id = intval($venta_id);
+            $stmt = $this->conn->prepare("
+                SELECT COALESCE(SUM(total_devuelto), 0) as total_devuelto 
+                FROM devoluciones 
+                WHERE venta_id = ?
+            ");
+            
+            if (!$stmt) {
+                return 0;
+            }
+            
+            $stmt->bind_param("i", $venta_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $stmt->close();
+            
+            return floatval($row['total_devuelto']);
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
 }
 ?>

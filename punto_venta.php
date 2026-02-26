@@ -365,27 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 </head>
 <body>
     <div class="container">
-        <aside class="sidebar">
-            <div class="logo">
-                <h2>👨‍🔧 Ferretería</h2>
-            </div>
-            <nav class="nav-menu">
-                <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
-                <a href="productos.php" class="nav-link">📦 Productos</a>
-                <?php if (esAdmin()): ?>
-                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
-                <?php endif; ?>
-                <a href="punto_venta.php" class="nav-link active">🛒 Punto de Venta</a>
-                <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
-                <a href="historial_ventas.php" class="nav-link">📊 Historial Ventas</a>
-                <a href="bajo_stock.php" class="nav-link">⚠️ Bajo Stock</a>
-                <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-                <?php if (esAdmin()): ?>
-                    <a href="crear_usuario.php" class="nav-link">👤 Crear Usuario</a>
-                <?php endif; ?>
-                <a href="logout.php" class="nav-link" style="color: #e74c3c;">🚪 Cerrar Sesión</a>
-            </nav>
-        </aside>
+        <?php require_once 'menu.php'; ?>
 
         <main class="main-content">
             <div class="header">
