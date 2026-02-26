@@ -6,7 +6,8 @@ require_once 'Producto.php';
 $producto = new Producto($conn);
 $todos_productos = $producto->obtenerTodos();
 $bajo_stock = $producto->obtenerBajoStock();
-$historial = $producto->obtenerHistorial();
+$historial_completo = $producto->obtenerHistorial();
+$historial = array_slice($historial_completo, 0, 5); // Solo últimos 5 movimientos
 
 // Calcular estadísticas
 $total_productos = count($todos_productos);
