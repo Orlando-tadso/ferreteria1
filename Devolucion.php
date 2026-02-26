@@ -229,7 +229,7 @@ class Devolucion {
                 $subtotal = floatval($prod['subtotal']);
                 
                 // Registrar detalle de devolución
-                $stmt_detalle->bind_param("iiidd", $devolucion_id, $detalle_id, $producto_id, $cantidad, $precio_unitario, $subtotal);
+                $stmt_detalle->bind_param("iiiidd", $devolucion_id, $detalle_id, $producto_id, $cantidad, $precio_unitario, $subtotal);
                 $stmt_detalle->execute();
                 
                 if ($stmt_detalle->error) {

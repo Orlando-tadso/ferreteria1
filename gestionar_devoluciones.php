@@ -89,36 +89,49 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
     <link rel="stylesheet" href="styles.css">
     <style>
         .devolucion-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
         }
         
-        .buscar-venta {
+        .formulario-busqueda {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
         }
         
-        .buscar-venta h3 {
+        .formulario-busqueda h3 {
             margin-top: 0;
             color: #2c3e50;
+            font-size: 18px;
         }
         
-        .form-busqueda {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+        .form-group {
+            margin: 15px 0;
         }
         
-        .form-busqueda input {
-            flex: 1;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
         }
         
         .btn {
@@ -127,6 +140,7 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: bold;
             transition: background-color 0.3s;
         }
         
@@ -157,142 +171,153 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
             background-color: #7f8c8d;
         }
         
-        .venta-info {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .venta-info.show {
-            display: block;
+        .btn-group {
+            display: flex;
+            gap: 10px;
         }
         
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            margin-bottom: 20px;
         }
         
         .info-item {
-            padding: 10px;
             background: #f8f9fa;
+            padding: 15px;
             border-radius: 4px;
+            border-left: 4px solid #3498db;
         }
         
         .info-item label {
             font-weight: bold;
-            color: #555;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
             display: block;
             margin-bottom: 5px;
-            font-size: 12px;
         }
         
         .info-item span {
+            display: block;
+            font-size: 16px;
             color: #2c3e50;
-            font-size: 14px;
-        }
-        
-        .productos-tabla {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .productos-tabla th,
-        .productos-tabla td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .productos-tabla th {
-            background-color: #3498db;
-            color: white;
             font-weight: bold;
-        }
-        
-        .productos-tabla tr:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .cantidad-input {
-            width: 80px;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-align: center;
-        }
-        
-        .checkbox-devolver {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        
-        .motivo-devolucion {
-            margin: 20px 0;
-        }
-        
-        .motivo-devolucion textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            resize: vertical;
-        }
-        
-        .historial-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-top: 30px;
-        }
-        
-        .historial-container h3 {
-            color: #2c3e50;
-            margin-top: 0;
         }
         
         .alert {
             padding: 15px;
             border-radius: 4px;
             margin-bottom: 20px;
+            border-left: 4px solid;
         }
         
         .alert-success {
             background-color: #d4edda;
             color: #155724;
-            border: 1px solid #c3e6cb;
+            border-color: #4caf50;
         }
         
         .alert-error {
             background-color: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
+            border-color: #f44336;
         }
         
         .alert-info {
             background-color: #d1ecf1;
             color: #0c5460;
-            border: 1px solid #bee5eb;
+            border-color: #2196F3;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .table th {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .checkbox-devolver {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .cantidad-input {
+            width: 70px;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .cantidad-input:disabled {
+            background-color: #eee;
+            cursor: not-allowed;
+        }
+        
+        .motivo-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .motivo-section label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .motivo-section textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        .motivo-section textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
         }
         
         .total-devolucion {
-            font-size: 18px;
-            font-weight: bold;
-            color: #27ae60;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
             text-align: right;
-            margin-top: 15px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 4px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .acciones-devolucion {
@@ -304,7 +329,7 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
         
         .badge {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 5px 10px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
@@ -312,84 +337,125 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
         
         .badge-warning {
             background-color: #ffc107;
-            color: #000;
+            color: #333;
+        }
+        
+        .venta-info {
+            display: none;
+        }
+        
+        .venta-info.show {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="devolucion-container">
-        <h1>📦 Gestionar Devoluciones</h1>
-        <p style="color: #666;">Procesar devoluciones de productos. El inventario se ajustará automáticamente.</p>
-        
-        <div id="mensaje-container"></div>
-        
-        <!-- Buscar Venta -->
-        <div class="buscar-venta">
-            <h3>🔍 Buscar Venta</h3>
-            <div class="form-busqueda">
-                <input 
-                    type="text" 
-                    id="numero_factura" 
-                    placeholder="Ingrese número de factura (ej: FAC-20260226123456-1234)"
-                    autocomplete="off"
-                >
-                <button class="btn btn-primary" onclick="buscarVenta()">Buscar</button>
-                <a href="dashboard.php" class="btn btn-secondary">← Volver</a>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>👨‍🔧 Ferretería</h2>
             </div>
-        </div>
-        
-        <!-- Información de la Venta -->
-        <div class="venta-info" id="venta-info">
-            <h3>📄 Información de la Venta</h3>
-            <div class="info-grid" id="info-grid">
-                <!-- Se llenará dinámicamente -->
-            </div>
-            
-            <h4>Productos en la Venta</h4>
-            <p style="color: #666; font-size: 14px;">Seleccione los productos a devolver e indique la cantidad</p>
-            
-            <table class="productos-tabla" id="productos-tabla">
-                <thead>
-                    <tr>
-                        <th>Devolver</th>
-                        <th>Producto</th>
-                        <th>Cantidad Vendida</th>
-                        <th>Ya Devuelto</th>
-                        <th>Disponible</th>
-                        <th>Cantidad a Devolver</th>
-                        <th>Precio Unit.</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody id="productos-tbody">
-                    <!-- Se llenará dinámicamente -->
-                </tbody>
-            </table>
-            
-            <div class="total-devolucion" id="total-devolucion">
-                Total a Devolver: $0.00
-            </div>
-            
-            <div class="motivo-devolucion">
-                <label for="motivo" style="font-weight: bold; display: block; margin-bottom: 10px;">
-                    Motivo de la Devolución *
-                </label>
-                <textarea 
-                    id="motivo" 
-                    placeholder="Describa el motivo de la devolución (ej: producto equivocado, defectuoso, etc.)"
-                    required
-                ></textarea>
-            </div>
-            
-            <div class="acciones-devolucion">
-                <button class="btn btn-secondary" onclick="cancelarDevolucion()">Cancelar</button>
-                <button class="btn btn-success" onclick="procesarDevolucion()">✓ Procesar Devolución</button>
-            </div>
-        </div>
-        
-        <!-- Historial de Devoluciones -->
-        <div class="historial-container">
-            <h3>📋 Historial de Devoluciones</h3>
+            <nav class="nav-menu">
+                <a href="dashboard.php" class="nav-link">📊 Dashboard</a>
+                <a href="productos.php" class="nav-link">📦 Productos</a>
+                <?php if (esAdmin()): ?>
+                    <a href="agregar_producto.php" class="nav-link">➕ Agregar Producto</a>
+                    <a href="punto_venta.php" class="nav-link">🛒 Punto de Venta</a>
+                <?php endif; ?>
+                <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
+                <a href="historial_ventas.php" class="nav-link">📊 Historial Ventas</a>
+                <?php if (esAdmin()): ?>
+                    <a href="gestionar_devoluciones.php" class="nav-link active">📦 Devoluciones</a>
+                <?php endif; ?>
+                <a href="bajo_stock.php" class="nav-link">⚠️ Bajo Stock</a>
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                <?php if (esAdmin()): ?>
+                    <a href="crear_usuario.php" class="nav-link">👤 Crear Usuario</a>
+                <?php endif; ?>
+                <a href="logout.php" class="nav-link" style="color: #e74c3c;">🚪 Cerrar Sesión</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>📦 Gestionar Devoluciones</h1>
+                <p>Procesar devoluciones de productos. El inventario se ajustará automáticamente.</p>
+            </header>
+
+            <div id="mensaje-container"></div>
+
+            <section class="card">
+                <div class="devolucion-container">
+                    <!-- Buscar Venta -->
+                    <div class="formulario-busqueda">
+                        <h3>🔍 Buscar Venta</h3>
+                        <div class="form-group">
+                            <label for="numero_factura">Número de Factura</label>
+                            <input 
+                                type="text" 
+                                id="numero_factura" 
+                                placeholder="FAC-20260226140813-9204"
+                                autocomplete="off"
+                            >
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="buscarVenta()">Buscar</button>
+                            <button class="btn btn-secondary" onclick="cancelarDevolucion()">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de la Venta -->
+                <div class="venta-info" id="venta-info">
+                    <h3 style="margin-top: 0; color: #2c3e50;">📄 Información de la Venta</h3>
+                    <div class="info-grid" id="info-grid">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+
+                    <h4 style="margin: 20px 0 10px 0; color: #2c3e50;">Productos en la Venta</h4>
+                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">Seleccione los productos a devolver e indique la cantidad</p>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Devolver</th>
+                                <th>Producto</th>
+                                <th>Vendida</th>
+                                <th>Devuelto</th>
+                                <th>Disponible</th>
+                                <th>Cantidad a Devolver</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productos-tbody">
+                            <!-- Se llenará dinámicamente -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="total-devolucion" id="total-devolucion">
+                        Total a Devolver: $0.00
+                    </div>
+                    
+                    <div class="motivo-section">
+                        <label for="motivo">Motivo de la Devolución *</label>
+                        <textarea 
+                            id="motivo" 
+                            placeholder="Describa el motivo de la devolución (ej: producto equivocado, defectuoso, etc.)"
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div class="acciones-devolucion">
+                        <button class="btn btn-secondary" onclick="cancelarDevolucion()">Cancelar</button>
+                        <button class="btn btn-success" onclick="procesarDevolucion()">✓ Procesar Devolución</button>
+                    </div>
+                </div>
+                
+                <!-- Historial de Devoluciones -->
+                <h3 style="margin-top: 40px; color: #2c3e50;">📋 Historial de Devoluciones</h3>
             <?php if (empty($historial)): ?>
                 <p style="color: #666;">No hay devoluciones registradas</p>
             <?php else: ?>
@@ -423,9 +489,10 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
                     </tbody>
                 </table>
             <?php endif; ?>
-        </div>
+            </section>
+        </main>
     </div>
-    
+
     <script>
         let ventaActual = null;
         let detallesActuales = [];
@@ -599,6 +666,8 @@ $historial = $devolucion->obtenerHistorialDevoluciones(100);
                     if (cantidad > 0 && cantidad <= detalle.cantidad_disponible_devolver) {
                         productos.push({
                             detalle_venta_id: detalle.detalle_id,
+                            producto_id: detalle.producto_id,
+                            precio_unitario: detalle.precio_unitario,
                             cantidad_devolver: cantidad
                         });
                     }
