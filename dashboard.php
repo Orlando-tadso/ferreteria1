@@ -44,6 +44,9 @@ foreach ($todos_productos as $prod) {
                 <?php endif; ?>
                 <a href="movimientos.php" class="nav-link">📋 Movimientos</a>
                 <a href="historial_ventas.php" class="nav-link">📊 Historial Ventas</a>
+                <?php if (esAdmin()): ?>
+                    <a href="gestionar_devoluciones.php" class="nav-link">📦 Devoluciones</a>
+                <?php endif; ?>
                 <a href="bajo_stock.php" class="nav-link">⚠️ Bajo Stock</a>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
                 <?php if (esAdmin()): ?>

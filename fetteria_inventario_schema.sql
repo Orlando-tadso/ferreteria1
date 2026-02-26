@@ -57,6 +57,8 @@ CREATE TABLE IF NOT EXISTS ventas (
     numero_factura VARCHAR(50) UNIQUE NOT NULL,
     cliente_nombre VARCHAR(150) NOT NULL,
     cliente_cedula VARCHAR(20) NOT NULL,
+    cliente_email VARCHAR(100),
+    cliente_telefono VARCHAR(20),
     total DECIMAL(10,2) NOT NULL,
     usuario_id INT,
     fecha_venta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -71,5 +73,30 @@ CREATE TABLE IF NOT EXISTS detalles_venta (
     precio_unitario DECIMAL(10,2) NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (venta_id) REFERENCES ventas(id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS devoluciones (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    venta_id INT NOT NULL,
+    numero_devolucion VARCHAR(50) UNIQUE NOT NULL,
+    motivo TEXT NOT NULL,
+    total_devuelto DECIMAL(10,2) NOT NULL,
+    usuario_id INT,
+    fecha_devolucion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (venta_id) REFERENCES ventas(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS detalles_devolucion (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    devolucion_id INT NOT NULL,
+    detalle_venta_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    cantidad_devuelta INT NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (devolucion_id) REFERENCES devoluciones(id) ON DELETE CASCADE,
+    FOREIGN KEY (detalle_venta_id) REFERENCES detalles_venta(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
