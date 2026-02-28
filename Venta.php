@@ -170,7 +170,18 @@ class Venta {
             
             // Confirmar transacción
             $this->conn->commit();
-            
+
+            // Notificación WhatsApp con CallMeBot
+            try {
+                $whatsapp_number = '573505630633'; // Tu número en formato internacional, sin +
+                $callmebot_apikey = '1687740';
+                $mensaje = "¡Nueva venta registrada en el sistema!\nFactura: $numero_factura\nCliente: $cliente_nombre\nTotal: $total";
+                $url = "https://api.callmebot.com/whatsapp.php?phone=$whatsapp_number&text=" . urlencode($mensaje) . "&apikey=$callmebot_apikey";
+                @file_get_contents($url);
+            } catch (Exception $e) {
+                // No detener la venta si falla la notificación
+            }
+
             return [
                 'success' => true,
                 'venta_id' => $venta_id,
