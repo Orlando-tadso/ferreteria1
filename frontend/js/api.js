@@ -6,9 +6,17 @@
  */
 
 class APIClient {
-    constructor(baseURL = '/ferreteria1') {
-        this.baseURL = baseURL;
+    constructor(baseURL = null) {
+        this.baseURL = baseURL ?? this.detectarBaseURL();
         this.token = this.obtenerToken();
+    }
+
+    detectarBaseURL() {
+        const segmentos = window.location.pathname.split('/').filter(Boolean);
+        if (segmentos.length > 0 && segmentos[0] === 'ferreteria1') {
+            return '/ferreteria1';
+        }
+        return '';
     }
     
     /**
@@ -74,7 +82,7 @@ class APIClient {
             // Si no está autenticado, limpiar token
             if (respuesta.status === 401) {
                 this.limpiarToken();
-                window.location.href = '/ferreteria1/login.html';
+                window.location.href = `${this.baseURL}/frontend/login.html`;
                 return;
             }
             
