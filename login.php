@@ -6,8 +6,19 @@ require_once 'seguridad.php';
 // Establecer headers de seguridad
 establecerHeadersSeguridad();
 
+$es_ajax = ($_POST['ajax'] ?? '') === '1' || (strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest');
+
 // Si ya está autenticado, redirige al dashboard
 if (isset($_SESSION['usuario_id'])) {
+    if ($es_ajax) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'success' => true,
+            'message' => 'Sesión activa',
+            'redirect' => 'frontend/index.html'
+        ]);
+        exit;
+    }
     header("Location: dashboard.php");
     exit;
 }
@@ -17,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     require_once 'config.php';
     
     $usuario = trim($_POST['usuario'] ?? '');
-    $contrasena = trim($_POST['contrasena'] ?? '');
+    $contrasena = trim($_POST['contrasena'] ?? ($_POST['password'] ?? ''));
     
     if (empty($usuario) || empty($contrasena)) {
         $error = 'Por favor completa todos los campos';
@@ -56,6 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $rol_sesion = 'inspector';
                     }
                     $_SESSION['usuario_rol'] = $rol_sesion;
+
+                    if ($es_ajax) {
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'Login exitoso',
+                            'redirect' => 'frontend/index.html'
+                        ]);
+                        exit;
+                    }
+
                     header("Location: dashboard.php");
                     exit;
                 } else {
@@ -69,6 +91,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->close();
         } catch (Exception $e) {
             $error = $e->getMessage();
+        }
+
+        if ($es_ajax) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'success' => false,
+                'message' => $error ?: 'Usuario o contraseña incorrectos'
+            ]);
+            exit;
         }
     }
 }

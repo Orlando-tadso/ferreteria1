@@ -140,7 +140,7 @@
             try {
                 const usuario = await api.obtenerUsuarioActual();
                 if (usuario.success) {
-                    window.location.href = 'frontend/index.html';
+                    window.location.href = 'index.html';
                 }
             } catch (error) {
                 // No autenticado, mostrar login
@@ -161,12 +161,12 @@
 
             try {
                 // Enviar a login.php (sistema antiguo)
-                const response = await fetch('login.php', {
+                const response = await fetch('../login.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `usuario=${encodeURIComponent(usuario)}&password=${encodeURIComponent(password)}&ajax=1`,
+                    body: `usuario=${encodeURIComponent(usuario)}&contrasena=${encodeURIComponent(password)}&ajax=1`,
                     credentials: 'include'
                 });
 
@@ -177,7 +177,7 @@
                     if (resultado.token) {
                         api.guardarToken(resultado.token);
                     }
-                    window.location.href = 'frontend/index.html';
+                    window.location.href = 'index.html';
                 } else {
                     error.textContent = resultado.message || 'Usuario o contraseña incorrectos';
                     error.classList.add('show');
