@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta - Ferretería</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <h2>🏪 Ferretería</h2>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">📊 Dashboard</a></li>
+                    <li><a href="punto_venta.html" class="active">🛒 Punto de Venta</a></li>
+                    <li><a href="productos.html">📦 Productos</a></li>
+                    <li><a href="historial.html">📋 Historial</a></li>
+                    <li><hr style="margin: 10px 0; border: none; border-top: 1px solid rgba(255,255,255,0.2);"></li>
+                    <li><a href="#" onclick="logout()">🚪 Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Punto de Venta</h1>
+            </header>
+
+            <div style="padding: 0 20px; display: flex; gap: 20px;">
+                <!-- Formulario de venta -->
+                <div style="flex: 1;">
+                    <div class="tarjeta">
+                        <h3>Nueva Venta</h3>
+                        <form id="form-venta" onsubmit="procesarVenta(event)">
+                            <div class="form-group">
+                                <label>Nombre Cliente</label>
+                                <input type="text" id="cliente_nombre" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cédula</label>
+                                <input type="text" id="cliente_cedula" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email (Opcional)</label>
+                                <input type="email" id="cliente_email">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Teléfono (Opcional)</label>
+                                <input type="tel" id="cliente_telefono">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Código de Barras o ID Producto</label>
+                                <input type="text" id="codigo_barras" placeholder="Escanear código...">
+                            </div>
+
+                            <button type="submit" class="btn btn-success" style="width: 100%;">
+                                Procesar Venta
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Carrito -->
+                <div style="flex: 1;">
+                    <div class="tarjeta">
+                        <h3>Carrito de Compras</h3>
+                        <table class="tabla" id="tabla-carrito">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Subtotal</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpo-carrito"></tbody>
+                        </table>
+                        
+                        <div style="margin-top: 20px; text-align: right;">
+                            <h3>Total: <span id="total-venta">$0</span></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        let carrito = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarAutenticacion();
+            document.getElementById('codigo_barras').focus();
+        });
+
+        document.getElementById('codigo_barras').addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const codigo = document.getElementById('codigo_barras').value;
+                await agregarAlCarrito(codigo);
+                document.getElementById('codigo_barras').value = '';
+            }
+        });
+
+        async function agregarAlCarrito(codigo) {
+            try {
+                const resultado = await api.obtenerProducto(codigo);
+                
+                if (!resultado.success || !resultado.data) {
+                    mostrarNotificacion('Producto no encontrado', 'error');
+                    return;
+                }
+
+                const producto = resultado.data;
+                
+                // Verificar si ya existe en carrito
+                const itemExistente = carrito.find(p => p.id === producto.id);
+                
+                if (itemExistente) {
+                    itemExistente.cantidad++;
+                } else {
+                    carrito.push({
+                        id: producto.id,
+                        nombre: producto.nombre,
+                        precio: parseFloat(producto.precio_unitario),
+                        cantidad: 1
+                    });
+                }
+                
+                actualizarCarrito();
+                mostrarNotificacion(`${producto.nombre} agregado`, 'success');
+            } catch (error) {
+                mostrarNotificacion('Error al buscar producto', 'error');
+            }
+        }
+
+        function actualizarCarrito() {
+            const tbody = document.getElementById('cuerpo-carrito');
+            tbody.innerHTML = '';
+            let total = 0;
+
+            carrito.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+
+                const row = `
+                    <tr>
+                        <td>${item.nombre}</td>
+                        <td>${item.cantidad}</td>
+                        <td>${formatearMoneda(item.precio)}</td>
+                        <td>${formatearMoneda(subtotal)}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="eliminarDelCarrito(${index})">
+                                ✕
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            document.getElementById('total-venta').textContent = formatearMoneda(total);
+        }
+
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarCarrito();
+        }
+
+        async function procesarVenta(e) {
+            e.preventDefault();
+
+            if (carrito.length === 0) {
+                mostrarNotificacion('El carrito está vacío', 'warning');
+                return;
+            }
+
+            const cliente_nombre = document.getElementById('cliente_nombre').value;
+            const cliente_cedula = document.getElementById('cliente_cedula').value;
+            const cliente_email = document.getElementById('cliente_email').value;
+            const cliente_telefono = document.getElementById('cliente_telefono').value;
+
+            try {
+                const resultado = await api.registrarVenta({
+                    cliente_nombre,
+                    cliente_cedula,
+                    cliente_email,
+                    cliente_telefono,
+                    productos: carrito.map(p => ({
+                        producto_id: p.id,
+                        cantidad: p.cantidad
+                    }))
+                });
+
+                if (resultado.success) {
+                    mostrarNotificacion('Venta registrada correctamente', 'success');
+                    carrito = [];
+                    document.getElementById('form-venta').reset();
+                    actualizarCarrito();
+                } else {
+                    mostrarNotificacion(resultado.message || 'Error al procesar venta', 'error');
+                }
+            } catch (error) {
+                mostrarNotificacion('Error al registrar venta', 'error');
+            }
+        }
+
+        async function logout() {
+            try {
+                await api.logout();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error en logout:', error);
+            }
+        }
+    </script>
+</body>
+</html>

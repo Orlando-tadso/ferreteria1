@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Ferretería</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <h2>🏪 Ferretería</h2>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">📊 Dashboard</a></li>
+                    <li><a href="punto_venta.html">🛒 Punto de Venta</a></li>
+                    <li><a href="productos.html" class="active">📦 Productos</a></li>
+                    <li><a href="historial.html">📋 Historial</a></li>
+                    <li><hr style="margin: 10px 0; border: none; border-top: 1px solid rgba(255,255,255,0.2);"></li>
+                    <li><a href="#" onclick="logout()">🚪 Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Gestión de Productos</h1>
+            </header>
+
+            <div style="padding: 0 20px;">
+                <button class="btn btn-primary" onclick="abrirFormularioCrear()">➕ Nuevo Producto</button>
+
+                <div id="formulario-crear" class="tarjeta" style="display: none; margin-top: 20px;">
+                    <h3>Crear Nuevo Producto</h3>
+                    <form id="form-crear-producto" onsubmit="crearProducto(event)">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="crear_nombre" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <textarea id="crear_descripcion"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="crear_categoria" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Materiales">Materiales</option>
+                                <option value="Herramientas">Herramientas</option>
+                                <option value="Pinturas">Pinturas</option>
+                                <option value="Tubería">Tubería</option>
+                                <option value="Eléctrica">Eléctrica</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cantidad</label>
+                            <input type="number" id="crear_cantidad" value="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cantidad Mínima</label>
+                            <input type="number" id="crear_cantidad_minima" value="5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Precio Unitario</label>
+                            <input type="number" id="crear_precio_unitario" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Código de Barras (Opcional)</label>
+                            <input type="text" id="crear_codigo_barras">
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Crear Producto</button>
+                        <button type="button" class="btn btn-secondary" onclick="cerrarFormularioCrear()">Cancelar</button>
+                    </form>
+                </div>
+
+                <div class="tarjeta" style="margin-top: 20px;">
+                    <h3>Productos</h3>
+                    <table class="tabla" id="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-productos"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await verificarAutenticacion();
+            await cargarProductos();
+        });
+
+        async function cargarProductos() {
+            try {
+                const resultado = await api.obtenerProductos();
+                const tbody = document.getElementById('cuerpo-productos');
+                tbody.innerHTML = '';
+
+                if (resultado.success && resultado.data) {
+                    resultado.data.forEach(producto => {
+                        const row = `
+                            <tr>
+                                <td>${producto.id}</td>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.categoria}</td>
+                                <td>${producto.cantidad}</td>
+                                <td>${formatearMoneda(producto.precio_unitario)}</td>
+                                <td>
+                                    <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarNotificacion('Error cargando productos', 'error');
+            }
+        }
+
+        function abrirFormularioCrear() {
+            document.getElementById('formulario-crear').style.display = 'block';
+        }
+
+        function cerrarFormularioCrear() {
+            document.getElementById('formulario-crear').style.display = 'none';
+            document.getElementById('form-crear-producto').reset();
+        }
+
+        async function crearProducto(e) {
+            e.preventDefault();
+
+            try {
+                const resultado = await api.crearProducto({
+                    nombre: document.getElementById('crear_nombre').value,
+                    descripcion: document.getElementById('crear_descripcion').value,
+                    categoria: document.getElementById('crear_categoria').value,
+                    cantidad: parseInt(document.getElementById('crear_cantidad').value),
+                    cantidad_minima: parseInt(document.getElementById('crear_cantidad_minima').value),
+                    precio_unitario: parseFloat(document.getElementById('crear_precio_unitario').value),
+                    codigo_barras: document.getElementById('crear_codigo_barras').value
+                });
+
+                if (resultado.success) {
+                    mostrarNotificacion('Producto creado correctamente', 'success');
+                    cerrarFormularioCrear();
+                    await cargarProductos();
+                } else {
+                    mostrarNotificacion(resultado.message || 'Error al crear', 'error');
+                }
+            } catch (error) {
+                mostrarNotificacion('Error al crear producto', 'error');
+            }
+        }
+
+        async function eliminarProducto(id) {
+            if (confirm('¿Está seguro de eliminar este producto?')) {
+                try {
+                    const resultado = await api.eliminarProducto(id);
+                    if (resultado.success) {
+                        mostrarNotificacion('Producto eliminado', 'success');
+                        await cargarProductos();
+                    }
+                } catch (error) {
+                    mostrarNotificacion('Error al eliminar', 'error');
+                }
+            }
+        }
+
+        async function logout() {
+            try {
+                await api.logout();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error en logout:', error);
+            }
+        }
+    </script>
+</body>
+</html>

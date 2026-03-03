@@ -1,15 +1,22 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Si la solicitud es una carpeta, continúa
-    RewriteCond %{REQUEST_FILENAME} -d [OR]
-    
-    # Si la solicitud es un archivo, continúa
-    RewriteCond %{REQUEST_FILENAME} -f
+    # Permitir archivos y directorios reales
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
     
-    # Si no es una carpeta o archivo, redirecciona a index.php
-    RewriteRule ^(.*)$ index.php [QSA,L]
+    # Redirigir requests a /api/* al backend
+    RewriteRule ^api/(.*)$ /ferreteria1/backend/api/$1 [L,QSA]
+    
+    # Redirigir requests a /frontend/* 
+    RewriteRule ^frontend/(.*)$ /ferreteria1/frontend/$1 [L,QSA]
+    
+    # Mantener login.php accesible
+    RewriteRule ^login\.php$ - [L]
+    
+    # Permitir public/
+    RewriteRule ^public/(.*)$ /ferreteria1/public/$1 [L,QSA]
 </IfModule>
 
 # Habilitar compresión
