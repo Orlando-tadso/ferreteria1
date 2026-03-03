@@ -5,6 +5,13 @@
  */
 
 require_once 'config.php';
+require_once 'verificar_sesion.php';
+
+// Solo accesible para administradores
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+    header('HTTP/1.1 403 Forbidden');
+    die(json_encode(['error' => 'Acceso denegado. Solo administradores.']));
+}
 
 $diagnostico = [];
 
@@ -18,7 +25,7 @@ $diagnostico['mysql'] = [
 // 2. Verificar tablas críticas
 $tablas_esperadas = ['productos', 'ventas', 'detalles_venta', 'movimientos', 'usuarios'];
 $tablas_existentes = [];
-$result = $conn->query("SHOW TABLES FROM fetteria_inventario");
+$result = $conn->query("SHOW TABLES FROM " . DB_NAME);
 while ($row = $result->fetch_row()) {
     $tablas_existentes[] = $row[0];
 }
