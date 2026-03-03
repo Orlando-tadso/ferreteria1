@@ -1,5 +1,9 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Compatibilidad con rutas antiguas/publicadas con prefijo /ferreteria1
+    RewriteRule ^ferreteria1/login\.html$ frontend/login.html [L,R=302]
+    RewriteRule ^ferreteria1/(.*)$ $1 [L,R=302]
     
     # Permitir archivos y directorios reales
     RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -7,16 +11,16 @@
     RewriteRule ^ - [L]
     
     # Redirigir requests a /api/* al backend
-    RewriteRule ^api/(.*)$ /ferreteria1/backend/api/$1 [L,QSA]
+    RewriteRule ^api/(.*)$ backend/api/$1 [L,QSA]
     
     # Redirigir requests a /frontend/* 
-    RewriteRule ^frontend/(.*)$ /ferreteria1/frontend/$1 [L,QSA]
+    RewriteRule ^frontend/(.*)$ frontend/$1 [L,QSA]
     
     # Mantener login.php accesible
     RewriteRule ^login\.php$ - [L]
     
     # Permitir public/
-    RewriteRule ^public/(.*)$ /ferreteria1/public/$1 [L,QSA]
+    RewriteRule ^public/(.*)$ public/$1 [L,QSA]
 </IfModule>
 
 # Habilitar compresión
