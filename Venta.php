@@ -112,27 +112,6 @@ class Venta {
             $venta_id = $stmt->insert_id;
             $stmt->close();
             
-            // Preparar statement para detalles
-            $stmt_detalle = $this->conn->prepare("INSERT INTO detalles_venta (venta_id, producto_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)");
-            
-            if (!$stmt_detalle) {
-                throw new Exception("Error en prepared statement detalles: " . $this->conn->error);
-            }
-            
-            // Preparar statement para ajuste de inventario
-            $stmt_ajuste = $this->conn->prepare("UPDATE productos SET cantidad = cantidad - ? WHERE id = ?");
-            
-            if (!$stmt_ajuste) {
-                throw new Exception("Error en prepared statement ajuste: " . $this->conn->error);
-            }
-            
-            // Preparar statement para movimientos
-            $stmt_mov = $this->conn->prepare("INSERT INTO movimientos (producto_id, tipo_movimiento, cantidad, motivo) VALUES (?, ?, ?, ?)");
-            
-            if (!$stmt_mov) {
-                throw new Exception("Error en prepared statement movimientos: " . $this->conn->error);
-            }
-            
             // Procesar cada producto
             foreach ($productos as $prod) {
                 $producto_id = intval($prod['producto_id']);
@@ -142,31 +121,48 @@ class Venta {
                 $tipo_mov = 'venta';
                 $motivo = "Venta factura " . $numero_factura;
                 
-                // Insertar detalle
+                // Insertar detalle con prepared statement nuevo en cada iteración
+                $stmt_detalle = $this->conn->prepare("INSERT INTO detalles_venta (venta_id, producto_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)");
+                
+                if (!$stmt_detalle) {
+                    throw new Exception("Error en prepared statement detalles: " . $this->conn->error);
+                }
+                
                 $stmt_detalle->bind_param("iiidd", $venta_id, $producto_id, $cantidad, $precio_unitario, $subtotal);
                 $stmt_detalle->execute();
                 
                 if ($stmt_detalle->error) {
                     throw new Exception("Error al registrar detalle: " . $stmt_detalle->error);
                 }
+                $stmt_detalle->close();
                 
-                // Ajustar cantidad en inventario
+                // Ajustar cantidad en inventario con prepared statement nuevo en cada iteración
+                $stmt_ajuste = $this->conn->prepare("UPDATE productos SET cantidad = cantidad - ? WHERE id = ?");
+                
+                if (!$stmt_ajuste) {
+                    throw new Exception("Error en prepared statement ajuste: " . $this->conn->error);
+                }
+                
                 $stmt_ajuste->bind_param("ii", $cantidad, $producto_id);
                 $stmt_ajuste->execute();
                 
                 if ($stmt_ajuste->error) {
                     throw new Exception("Error al ajustar inventario: " . $stmt_ajuste->error);
                 }
+                $stmt_ajuste->close();
                 
-                // Registrar movimiento
+                // Registrar movimiento con prepared statement nuevo en cada iteración
+                $stmt_mov = $this->conn->prepare("INSERT INTO movimientos (producto_id, tipo_movimiento, cantidad, motivo) VALUES (?, ?, ?, ?)");
+                
+                if (!$stmt_mov) {
+                    throw new Exception("Error en prepared statement movimientos: " . $this->conn->error);
+                }
+                
                 $stmt_mov->bind_param("isis", $producto_id, $tipo_mov, $cantidad, $motivo);
                 $stmt_mov->execute();
+                $stmt_mov->close();
                 // No lanzar excepción si falla el movimiento, es solo un log
             }
-            
-            $stmt_detalle->close();
-            $stmt_ajuste->close();
-            $stmt_mov->close();
             
             // Confirmar transacción
             $this->conn->commit();
