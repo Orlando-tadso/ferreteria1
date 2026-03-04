@@ -41,8 +41,14 @@ foreach ($todos_productos as $prod) {
                         <h1>DASHBOARD / SISTEMA DE INVENTARIOS</h1>
                         <p>Última actualización: <?php echo date('d/m/Y H:i:s'); ?></p>
                     </div>
-                    <div style="text-align: right; color: #666; font-size: 14px;">
-                        <p>👤 <?php echo htmlspecialchars($_SESSION['usuario_completo'] ?? 'Usuario'); ?></p>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button onclick="location.reload();" class="btn" style="background-color: #3498db; padding: 10px 20px; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 18px;">🔄</span>
+                            Actualizar Estadísticas
+                        </button>
+                        <div style="text-align: right; color: #666; font-size: 14px;">
+                            <p>👤 <?php echo htmlspecialchars($_SESSION['usuario_completo'] ?? 'Usuario'); ?></p>
+                        </div>
                     </div>
                 </div>
             </header>
